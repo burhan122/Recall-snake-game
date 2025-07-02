@@ -12,6 +12,7 @@
       align-items: center;
       height: 100vh;
       margin: 0;
+      font-family: monospace;
     }
 
     canvas {
@@ -22,7 +23,6 @@
     h1 {
       color: #00ff00;
       text-align: center;
-      font-family: monospace;
       margin: 10px 0;
     }
 
@@ -38,13 +38,7 @@
       padding-left: 100%;
       animation: marquee 10s linear infinite;
       color: #00ff00;
-      font-family: monospace;
       font-size: 18px;
-    }
-
-    @keyframes marquee {
-      0%   { transform: translateX(0%); }
-      100% { transform: translateX(-100%); }
     }
 
     .controls {
@@ -72,7 +66,6 @@
 
     .score {
       color: #00ff00;
-      font-family: monospace;
       font-size: 18px;
       margin: 5px;
     }
@@ -83,11 +76,56 @@
       padding: 10px 20px;
       background-color: #00ff00;
       color: black;
-      font-family: monospace;
       border: none;
       border-radius: 5px;
       cursor: pointer;
     }
+
+    /* Popup modal styles */
+    #shareModal {
+      display: none;
+      position: fixed;
+      z-index: 9999;
+      left: 0; top: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0,0,0,0.75);
+      justify-content: center;
+      align-items: center;
+    }
+
+    #shareModalContent {
+      background: #111;
+      color: #00ff00;
+      padding: 20px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: 0 0 15px #00ff00;
+    }
+
+    #shareModalContent p {
+      word-wrap: break-word;
+      font-size: 16px;
+      margin-bottom: 15px;
+    }
+
+    #shareModalContent a,
+    #shareModalContent button {
+      display: inline-block;
+      margin: 5px;
+      padding: 8px 15px;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+      text-decoration: none;
+      border: none;
+      background-color: #00ff00;
+      color: black;
+      box-shadow: 0 0 8px #00ff00;
+    }
+
   </style>
 </head>
 <body>
@@ -109,19 +147,32 @@
     </div>
   </div>
 
-  <button id="shareBtn" onclick="shareOnX()">📤 Share Score on X</button>
+  <button id="shareBtn" onclick="showShareModal()">📤 Share Score on X</button>
 
   <audio id="eatSound" src="eat.mp3"></audio>
   <audio id="bigEatSound" src="big-eat.mp3"></audio>
   <audio id="winSound" src="win.mp3"></audio>
 
+  <!-- Share Popup Modal -->
+  <div id="shareModal">
+    <div id="shareModalContent">
+      <h2>Share Your Score on X</h2>
+      <p id="shareURL"></p>
+      <a href="#" id="shareLink" target="_blank" rel="noopener noreferrer">Open X to Share</a>
+      <br />
+      <button onclick="closeShareModal()">Close</button>
+    </div>
+  </div>
+
   <script>
     const canvas = document.getElementById("game");
     const ctx = canvas.getContext("2d");
+
     const box = 15;
     const canvasSize = 20;
-    const spriteScale = 1.5;
-    const spriteSize = box * spriteScale;
+
+    const normalSize = box;
+    const bigBallSize = box * 2;
 
     let snake = [{ x: 9 * box, y: 9 * box }];
     let direction = null;
@@ -138,6 +189,7 @@
     const bigFoodImg = new Image();
 
     const imageURL = "https://iili.io/FYpkV1f.png";
+
     snakeHeadImg.src = imageURL;
     snakeBodyImg.src = imageURL;
     redBallImg.src = imageURL;
@@ -147,11 +199,15 @@
 
     function generateFood() {
       const isBig = foodCount > 0 && foodCount % 5 === 0;
-      return {
-        x: Math.floor(Math.random() * canvasSize) * box,
-        y: Math.floor(Math.random() * canvasSize) * box,
-        big: isBig
-      };
+      let x = Math.floor(Math.random() * canvasSize) * box;
+      let y = Math.floor(Math.random() * canvasSize) * box;
+
+      if (isBig) {
+        if (x + bigBallSize > canvas.width) x -= box;
+        if (y + bigBallSize > canvas.height) y -= box;
+      }
+
+      return { x, y, big: isBig };
     }
 
     function setDirection(dir) {
@@ -174,10 +230,22 @@
       document.getElementById("shareBtn").style.display = "inline-block";
     }
 
-    function shareOnX() {
-      const text = encodeURIComponent("I scored " + score + " points in the Recall Snake Game! 🐍 #RecallSnakeGame");
-      const url = "https://x.com/intent/tweet?text=" + text;
-      window.open(url, "_blank");
+    function showShareModal() {
+      const shareModal = document.getElementById("shareModal");
+      const shareURL = document.getElementById("shareURL");
+      const shareLink = document.getElementById("shareLink");
+
+      const text = encodeURIComponent(`I scored ${score} points in the Recall Snake Game! 🐍 #RecallSnakeGame`);
+      const url = `https://x.com/intent/tweet?text=${text}`;
+
+      shareURL.textContent = url;
+      shareLink.href = url;
+
+      shareModal.style.display = "flex";
+    }
+
+    function closeShareModal() {
+      document.getElementById("shareModal").style.display = "none";
     }
 
     function drawGame() {
@@ -186,11 +254,14 @@
 
       snake.forEach((segment, index) => {
         const img = index === 0 ? snakeHeadImg : snakeBodyImg;
-        ctx.drawImage(img, segment.x, segment.y, spriteSize, spriteSize);
+        ctx.drawImage(img, segment.x, segment.y, normalSize, normalSize);
       });
 
-      const foodImg = food.big ? bigFoodImg : redBallImg;
-      ctx.drawImage(foodImg, food.x, food.y, spriteSize, spriteSize);
+      if (food.big) {
+        ctx.drawImage(bigFoodImg, food.x, food.y, bigBallSize, bigBallSize);
+      } else {
+        ctx.drawImage(redBallImg, food.x, food.y, normalSize, normalSize);
+      }
 
       let headX = snake[0].x;
       let headY = snake[0].y;
