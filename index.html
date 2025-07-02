@@ -1,31 +1,31 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" >
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Recall Snake Game</title>
   <style>
     body {
-      background-color: #0a0a0a;
+      background-color: black;
       display: flex;
       flex-direction: column;
       align-items: center;
       height: 100vh;
       margin: 0;
-      font-family: 'Courier New', monospace;
+      font-family: monospace;
       color: #00ff00;
       user-select: none;
-      overflow: hidden;
     }
-    
-    .header {
-      width: 100%;
-      background: #111;
-      border-bottom: 2px solid #00cc00;
-      padding: 10px 0;
+    canvas {
+      border: 3px solid #00ff00;
+      background-color: #111;
+      display: block;
+      margin: 0 auto;
+    }
+    h1 {
+      margin: 10px 0;
       text-align: center;
     }
-    
     .marquee {
       width: 100%;
       overflow: hidden;
@@ -33,97 +33,47 @@
       box-sizing: border-box;
       margin-bottom: 10px;
     }
-    
     .marquee span {
       display: inline-block;
       padding-left: 100%;
-      animation: marquee 15s linear infinite;
+      animation: marquee 10s linear infinite;
       color: #00ff00;
       font-size: 18px;
-      text-shadow: 0 0 5px #00ff00;
     }
-    
     @keyframes marquee {
       0%   { transform: translateX(0%); }
       100% { transform: translateX(-100%); }
     }
-    
-    h1 {
-      margin: 10px 0;
-      text-align: center;
-      font-size: 2.5rem;
-      text-shadow: 0 0 10px #00ff00;
-      letter-spacing: 2px;
-    }
-    
-    canvas {
-      border: 3px solid #00cc00;
-      background-color: #111;
-      display: block;
-      margin: 10px auto;
-      box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
-    }
-    
-    .score {
-      font-size: 20px;
-      margin: 10px;
-      text-align: center;
-      padding: 8px 20px;
-      background: #111;
-      border: 2px solid #00cc00;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
-    }
-    
     .controls {
       margin-top: 15px;
       text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
     }
-    
-    .direction-buttons {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      grid-template-rows: repeat(3, 1fr);
-      gap: 5px;
-      margin-bottom: 15px;
-    }
-    
     .controls button {
-      width: 70px;
-      height: 70px;
-      font-size: 28px;
-      margin: 2px;
+      width: 60px;
+      height: 60px;
+      font-size: 24px;
+      margin: 5px;
       background-color: #111;
       color: #00ff00;
-      border: 2px solid #00cc00;
+      border: 2px solid #00ff00;
       border-radius: 10px;
       cursor: pointer;
-      box-shadow: 0 0 8px rgba(0, 255, 0, 0.5);
-      transition: all 0.2s ease;
+      box-shadow: 0 0 10px #00ff00;
+      transition: 0.2s;
     }
-    
     .controls button:hover {
-      background-color: #00cc00;
-      color: #000;
-      transform: scale(1.05);
+      background-color: #00ff00;
+      color: black;
     }
-    
-    .controls button:active {
-      transform: scale(0.95);
+    .score {
+      font-size: 18px;
+      margin: 5px;
+      text-align: center;
     }
-    
-    #up-btn { grid-column: 2; grid-row: 1; }
-    #left-btn { grid-column: 1; grid-row: 2; }
-    #down-btn { grid-column: 2; grid-row: 3; }
-    #right-btn { grid-column: 3; grid-row: 2; }
-    
     #startOverlay {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.95);
+      background: rgba(0,0,0,0.9);
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -131,58 +81,27 @@
       color: #00ff00;
       font-size: 24px;
       z-index: 999;
-      backdrop-filter: blur(5px);
     }
-    
-    #startOverlay h2 {
-      font-size: 3rem;
-      margin-bottom: 30px;
-      text-shadow: 0 0 15px #00ff00;
-      text-align: center;
-    }
-    
     #startOverlay input {
-      background: rgba(0, 0, 0, 0.7);
+      background: black;
       color: #00ff00;
       font-size: 22px;
-      border: 2px solid #00cc00;
-      border-radius: 8px;
-      padding: 12px 20px;
+      border: 2px solid #00ff00;
+      border-radius: 5px;
+      padding: 8px 12px;
       margin-top: 15px;
-      width: 300px;
-      max-width: 80%;
+      width: 250px;
       text-align: center;
-      box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
     }
-    
-    #startOverlay input::placeholder {
-      color: #009900;
-    }
-    
     #startOverlay button {
-      margin-top: 30px;
-      width: 200px;
-      padding: 15px;
-      background: #111;
-      color: #00ff00;
-      border: 2px solid #00cc00;
-      border-radius: 8px;
-      font-size: 1.5rem;
+      margin-top: 15px;
+      width: 150px;
       cursor: pointer;
-      box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
-      transition: all 0.3s ease;
     }
-    
-    #startOverlay button:hover {
-      background: #00cc00;
-      color: #000;
-      transform: scale(1.05);
-    }
-    
     #modalOverlay {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.9);
+      background: rgba(0,0,0,0.95);
       display: none;
       flex-direction: column;
       justify-content: center;
@@ -191,177 +110,79 @@
       color: #00ff00;
       font-size: 20px;
       padding: 20px;
-      backdrop-filter: blur(5px);
     }
-    
     #modalOverlay.active {
       display: flex;
     }
-    
     #modalContent {
       background: #111;
-      border: 3px solid #00cc00;
-      padding: 30px;
-      border-radius: 15px;
-      max-width: 500px;
-      width: 90%;
+      border: 3px solid #00ff00;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 400px;
+      width: 100%;
       text-align: center;
       position: relative;
-      box-shadow: 0 0 30px rgba(0, 255, 0, 0.4);
     }
-    
     #modalContent h2 {
       margin-top: 0;
-      margin-bottom: 20px;
-      font-size: 2.5rem;
-      text-shadow: 0 0 10px #00ff00;
+      margin-bottom: 15px;
     }
-    
-    #modalContent p {
-      font-size: 1.4rem;
-      margin-bottom: 25px;
-    }
-    
     #modalContent button {
-      background-color: #00cc00;
-      color: #000;
-      border: none;
-      padding: 12px 25px;
-      font-size: 1.2rem;
-      border-radius: 8px;
-      cursor: pointer;
-      margin: 10px;
-      font-weight: bold;
-      transition: all 0.2s ease;
-      box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
-    }
-    
-    #modalContent button:hover {
       background-color: #00ff00;
-      transform: scale(1.05);
+      color: black;
+      border: none;
+      padding: 10px 20px;
+      font-size: 18px;
+      border-radius: 6px;
+      cursor: pointer;
+      margin: 5px;
     }
-    
-    #closeModalBtn {
+    #modalContent #closeModalBtn {
       position: absolute;
-      top: 15px;
-      right: 15px;
+      top: 8px;
+      right: 8px;
       background: transparent;
       color: #00ff00;
-      font-size: 30px;
+      font-size: 24px;
       font-weight: bold;
       border: none;
       cursor: pointer;
-      width: 40px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 50%;
-      transition: all 0.2s ease;
     }
-    
-    #closeModalBtn:hover {
-      background: rgba(255, 0, 0, 0.3);
-      transform: rotate(90deg);
-    }
-    
     #leaderboardList {
-      max-height: 250px;
+      max-height: 200px;
       overflow-y: auto;
       text-align: left;
-      margin: 20px 0;
-      padding: 10px;
-      border: 1px solid #00cc00;
-      border-radius: 8px;
-      background: rgba(0, 0, 0, 0.3);
-      list-style-type: none;
+      margin: 10px 0;
+      padding-left: 10px;
     }
-    
     #leaderboardList li {
-      margin-bottom: 10px;
-      padding: 8px 15px;
-      font-size: 1.2rem;
-      border-bottom: 1px solid #009900;
-      display: flex;
-      justify-content: space-between;
-    }
-    
-    #leaderboardList li:last-child {
-      border-bottom: none;
-    }
-    
-    .rank {
-      font-weight: bold;
-      color: #00ff00;
-      margin-right: 15px;
-    }
-    
-    .player-name {
-      flex-grow: 1;
-    }
-    
-    .player-score {
-      font-weight: bold;
-      color: #ffff00;
-    }
-    
-    .footer {
-      margin-top: 20px;
-      color: #009900;
-      font-size: 14px;
-      text-align: center;
-      padding: 10px;
-    }
-    
-    @media (max-width: 600px) {
-      canvas {
-        width: 95vw;
-        height: 95vw;
-      }
-      
-      .controls button {
-        width: 60px;
-        height: 60px;
-        font-size: 24px;
-      }
-      
-      h1 {
-        font-size: 1.8rem;
-      }
-      
-      .score {
-        font-size: 18px;
-      }
+      margin-bottom: 6px;
     }
   </style>
 </head>
 <body>
-  <div class="header">
-    <div class="marquee">
-      <span>Welcome to Recall Snake Game 🐍 • Use arrow keys or buttons to move • Collect food to grow • Avoid walls and yourself • Good luck! • </span>
-    </div>
+
+  <div class="marquee">
+    <span>Welcome to Trueworker24 Recall-Snake-Game 🐍</span>
   </div>
 
-  <h1>RECALL SNAKE GAME</h1>
+  <h1>Recall Snake Game</h1>
   <div class="score" id="scoreDisplay">Score: 0</div>
-  <canvas id="game" width="450" height="450"></canvas>
+  <canvas id="game" width="300" height="300"></canvas>
 
   <div class="controls">
-    <div class="direction-buttons">
-      <button id="up-btn" aria-label="Move Up">⬆️</button>
-      <button id="left-btn" aria-label="Move Left">⬅️</button>
-      <button id="down-btn" aria-label="Move Down">⬇️</button>
-      <button id="right-btn" aria-label="Move Right">➡️</button>
-    </div>
-    <button id="pause-btn">⏸️ Pause</button>
+    <button onclick="setDirection('UP')">⬆️</button><br/>
+    <button onclick="setDirection('LEFT')">⬅️</button>
+    <button onclick="setDirection('DOWN')">⬇️</button>
+    <button onclick="setDirection('RIGHT')">➡️</button>
   </div>
 
   <!-- Start Overlay -->
   <div id="startOverlay">
-    <h2>RECALL SNAKE GAME</h2>
-    <label for="usernameInput">Enter Your Name to Begin</label>
-    <input id="usernameInput" type="text" maxlength="15" placeholder="Snake Master" autocomplete="off" />
-    <button id="startBtn">START GAME</button>
+    <label for="usernameInput">Enter Your Name to Start</label>
+    <input id="usernameInput" type="text" maxlength="15" placeholder="Your Name" autocomplete="off" />
+    <button id="startBtn">Start Game</button>
   </div>
 
   <!-- Modal Overlay (Game Over/Win + Leaderboard + Share) -->
@@ -372,371 +193,272 @@
       <p id="modalMessage"></p>
       <button id="restartBtn">Restart Game</button>
       <button id="showLeaderboardBtn">Show Leaderboard</button>
-      <button id="shareBtn">Share Your Score</button>
-      <ul id="leaderboardList"></ul>
+      <button id="shareBtn">Share Score on X</button>
+      <ul id="leaderboardList" style="display:none;"></ul>
     </div>
   </div>
-  
-  <div class="footer">
-    Created with ❤️ • Recall Snake Game v2.0 • &copy; 2024
-  </div>
 
-  <script>
-    const canvas = document.getElementById("game");
-    const ctx = canvas.getContext("2d");
-    const box = 15;
-    const canvasSize = 30; // 450 / 15 = 30
-    
-    let snake = [];
-    let direction = null;
-    let nextDirection = null;
-    let score = 0;
-    let foodCount = 0;
-    let food = null;
-    let gameInterval = null;
-    let username = "";
-    let isPaused = false;
-    let gameStarted = false;
-    
-    // UI Elements
-    const scoreDisplay = document.getElementById("scoreDisplay");
-    const startOverlay = document.getElementById("startOverlay");
-    const usernameInput = document.getElementById("usernameInput");
-    const startBtn = document.getElementById("startBtn");
-    const modalOverlay = document.getElementById("modalOverlay");
-    const modalTitle = document.getElementById("modalTitle");
-    const modalMessage = document.getElementById("modalMessage");
-    const restartBtn = document.getElementById("restartBtn");
-    const showLeaderboardBtn = document.getElementById("showLeaderboardBtn");
-    const shareBtn = document.getElementById("shareBtn");
-    const closeModalBtn = document.getElementById("closeModalBtn");
-    const leaderboardList = document.getElementById("leaderboardList");
-    const upBtn = document.getElementById("up-btn");
-    const leftBtn = document.getElementById("left-btn");
-    const downBtn = document.getElementById("down-btn");
-    const rightBtn = document.getElementById("right-btn");
-    const pauseBtn = document.getElementById("pause-btn");
-    
-    // Start button click
-    startBtn.addEventListener("click", startGameHandler);
-    
-    // Restart button click
-    restartBtn.addEventListener("click", () => {
-      modalOverlay.classList.remove("active");
-      resetGame();
-      startGame();
+<script>
+  const canvas = document.getElementById("game");
+  const ctx = canvas.getContext("2d");
+  const box = 15;
+  const canvasSize = 20;
+
+  // Sizes for images (you can tweak here)
+  const snakeSize = 20; // px for snake segment
+  const smallBallSize = 15;
+  const bigBallSize = 30;
+
+  let snake = [];
+  let direction = null;
+  let score = 0;
+  let foodCount = 0;
+  let food = null;
+  let gameInterval = null;
+  let username = "";
+
+  // Images - replace URLs with your HD assets if you want
+  const snakeHeadImg = new Image();
+  const snakeBodyImg = new Image();
+  const redBallImg = new Image();
+  const bigFoodImg = new Image();
+
+  // Example HD images URLs:
+  const snakeHeadURL = "https://iili.io/FYpkV1f.png"; // You can replace
+  const snakeBodyURL = "https://iili.io/FYpkV1f.png";
+  const redBallURL = "https://iili.io/FYpkV1f.png";
+  const bigBallURL = "https://iili.io/Fa9MMAu.th.png";
+
+  snakeHeadImg.src = snakeHeadURL;
+  snakeBodyImg.src = snakeBodyURL;
+  redBallImg.src = redBallURL;
+  bigFoodImg.src = bigBallURL;
+
+  // Sounds (replace URLs or add your own mp3)
+  const eatSound = new Audio("eat.mp3");
+  const bigEatSound = new Audio("big-eat.mp3");
+  const winSound = new Audio("win.mp3");
+
+  // UI Elements
+  const scoreDisplay = document.getElementById("scoreDisplay");
+  const startOverlay = document.getElementById("startOverlay");
+  const usernameInput = document.getElementById("usernameInput");
+  const startBtn = document.getElementById("startBtn");
+  const modalOverlay = document.getElementById("modalOverlay");
+  const modalTitle = document.getElementById("modalTitle");
+  const modalMessage = document.getElementById("modalMessage");
+  const restartBtn = document.getElementById("restartBtn");
+  const showLeaderboardBtn = document.getElementById("showLeaderboardBtn");
+  const shareBtn = document.getElementById("shareBtn");
+  const closeModalBtn = document.getElementById("closeModalBtn");
+  const leaderboardList = document.getElementById("leaderboardList");
+
+  // Start button click
+  startBtn.addEventListener("click", () => {
+    const name = usernameInput.value.trim();
+    if (!name) {
+      alert("Please enter your name to start!");
+      return;
+    }
+    username = name;
+    startOverlay.style.display = "none";
+    resetGame();
+    startGame();
+  });
+
+  // Restart button click
+  restartBtn.addEventListener("click", () => {
+    modalOverlay.classList.remove("active");
+    resetGame();
+    startGame();
+  });
+
+  // Show leaderboard button click
+  showLeaderboardBtn.addEventListener("click", () => {
+    showLeaderboardBtn.style.display = "none";
+    restartBtn.style.display = "inline-block";
+    shareBtn.style.display = "inline-block";
+    displayLeaderboard();
+  });
+
+  // Share button click
+  shareBtn.addEventListener("click", () => {
+    const text = encodeURIComponent(`I scored ${score} points in Recall Snake Game! 🐍 #RecallSnakeGame`);
+    const url = `https://x.com/intent/tweet?text=${text}`;
+    window.open(url, "_blank", "width=600,height=400");
+  });
+
+  // Close modal button click
+  closeModalBtn.addEventListener("click", () => {
+    modalOverlay.classList.remove("active");
+  });
+
+  // Keyboard controls
+  document.addEventListener("keydown", (e) => {
+    if (!gameInterval) return; // don't move if game not started
+    if (e.key === "ArrowLeft") setDirection("LEFT");
+    else if (e.key === "ArrowUp") setDirection("UP");
+    else if (e.key === "ArrowRight") setDirection("RIGHT");
+    else if (e.key === "ArrowDown") setDirection("DOWN");
+  });
+
+  // Direction setter with safety
+  function setDirection(dir) {
+    if (dir === "LEFT" && direction !== "RIGHT") direction = "LEFT";
+    else if (dir === "UP" && direction !== "DOWN") direction = "UP";
+    else if (dir === "RIGHT" && direction !== "LEFT") direction = "RIGHT";
+    else if (dir === "DOWN" && direction !== "UP") direction = "DOWN";
+  }
+
+  // Generate food object
+  function generateFood() {
+    const isBig = foodCount > 0 && foodCount % 5 === 0;
+    return {
+      x: Math.floor(Math.random() * canvasSize) * box,
+      y: Math.floor(Math.random() * canvasSize) * box,
+      big: isBig
+    };
+  }
+
+  // Reset game state
+  function resetGame() {
+    snake = [{ x: 9 * box, y: 9 * box }];
+    direction = null;
+    score = 0;
+    foodCount = 0;
+    food = generateFood();
+    updateScore();
+  }
+
+  // Start game loop
+  function startGame() {
+    if (gameInterval) clearInterval(gameInterval);
+    direction = "RIGHT"; // default start direction
+    gameInterval = setInterval(drawGame, 100);
+  }
+
+  // Update score display
+  function updateScore() {
+    scoreDisplay.textContent = `Player: ${username} | Score: ${score}`;
+  }
+
+  // Draw game frame
+  function drawGame() {
+    // Clear and draw background
+    ctx.fillStyle = "#111";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Draw game boundary lines (overline fixes)
+    ctx.strokeStyle = "#00ff00";
+    ctx.lineWidth = 3;
+    ctx.strokeRect(0, 0, canvas.width, canvas.height);
+
+    // Draw snake
+    snake.forEach((segment, idx) => {
+      const img = idx === 0 ? snakeHeadImg : snakeBodyImg;
+      const size = idx === 0 ? snakeSize : snakeSize * 0.9; // head bigger
+      ctx.drawImage(img, segment.x + (box - size)/2, segment.y + (box - size)/2, size, size);
     });
-    
-    // Show leaderboard button click
-    showLeaderboardBtn.addEventListener("click", () => {
-      showLeaderboardBtn.style.display = "none";
-      restartBtn.style.display = "inline-block";
-      shareBtn.style.display = "inline-block";
-      displayLeaderboard();
-    });
-    
-    // Share button click
-    shareBtn.addEventListener("click", () => {
-      const text = encodeURIComponent(`I scored ${score} points in Recall Snake Game! 🐍 #RecallSnakeGame\nPlay it here: ${window.location.href}`);
-      const url = `https://twitter.com/intent/tweet?text=${text}`;
-      window.open(url, "_blank", "width=600,height=400");
-    });
-    
-    // Close modal button click
-    closeModalBtn.addEventListener("click", () => {
-      modalOverlay.classList.remove("active");
-    });
-    
-    // Direction buttons
-    upBtn.addEventListener("click", () => setDirection("UP"));
-    leftBtn.addEventListener("click", () => setDirection("LEFT"));
-    downBtn.addEventListener("click", () => setDirection("DOWN"));
-    rightBtn.addEventListener("click", () => setDirection("RIGHT"));
-    
-    // Pause button
-    pauseBtn.addEventListener("click", togglePause);
-    
-    // Keyboard controls
-    document.addEventListener("keydown", (e) => {
-      if (!gameStarted) return;
-      
-      if (e.key === "Escape") {
-        togglePause();
-        return;
-      }
-      
-      if (isPaused) return;
-      
-      if (e.key === "ArrowLeft") setDirection("LEFT");
-      else if (e.key === "ArrowUp") setDirection("UP");
-      else if (e.key === "ArrowRight") setDirection("RIGHT");
-      else if (e.key === "ArrowDown") setDirection("DOWN");
-    });
-    
-    // Direction setter with safety
-    function setDirection(dir) {
-      if (!gameStarted || isPaused) return;
-      
-      // Prevent 180-degree turns
-      if (dir === "LEFT" && direction !== "RIGHT") nextDirection = "LEFT";
-      else if (dir === "UP" && direction !== "DOWN") nextDirection = "UP";
-      else if (dir === "RIGHT" && direction !== "LEFT") nextDirection = "RIGHT";
-      else if (dir === "DOWN" && direction !== "UP") nextDirection = "DOWN";
+
+    // Draw food
+    const foodImg = food.big ? bigFoodImg : redBallImg;
+    const fSize = food.big ? bigBallSize : smallBallSize;
+    ctx.drawImage(foodImg, food.x + (box - fSize)/2, food.y + (box - fSize)/2, fSize, fSize);
+
+    // Calculate next head position
+    let headX = snake[0].x;
+    let headY = snake[0].y;
+    if (direction === "LEFT") headX -= box;
+    else if (direction === "RIGHT") headX += box;
+    else if (direction === "UP") headY -= box;
+    else if (direction === "DOWN") headY += box;
+
+    // Check collisions: wall or self
+    if (
+      headX < 0 || headX >= canvas.width ||
+      headY < 0 || headY >= canvas.height ||
+      snake.some((seg, i) => i !== 0 && seg.x === headX && seg.y === headY)
+    ) {
+      endGame(false);
+      return;
     }
-    
-    // Start game handler
-    function startGameHandler() {
-      const name = usernameInput.value.trim();
-      if (!name) {
-        alert("Please enter your name to start!");
-        return;
-      }
-      // Sanitize username
-      username = name.replace(/[^a-zA-Z0-9 ]/g, "").substring(0, 15) || "Player";
-      startOverlay.style.display = "none";
-      resetGame();
-      startGame();
-      gameStarted = true;
-    }
-    
-    // Generate food not on snake
-    function generateFood() {
-      const isBig = foodCount > 0 && foodCount % 5 === 0;
-      let newFood;
-      let onSnake;
-      
-      do {
-        newFood = {
-          x: Math.floor(Math.random() * canvasSize) * box,
-          y: Math.floor(Math.random() * canvasSize) * box,
-          big: isBig
-        };
-        onSnake = snake.some(segment => segment.x === newFood.x && segment.y === newFood.y);
-      } while (onSnake);
-      
-      return newFood;
-    }
-    
-    // Reset game state
-    function resetGame() {
-      snake = [
-        { x: 10 * box, y: 10 * box },
-        { x: 9 * box, y: 10 * box },
-        { x: 8 * box, y: 10 * box }
-      ];
-      direction = "RIGHT";
-      nextDirection = "RIGHT";
-      score = 0;
-      foodCount = 0;
-      food = generateFood();
-      isPaused = false;
-      updateScore();
-      pauseBtn.textContent = "⏸️ Pause";
-    }
-    
-    // Start game loop
-    function startGame() {
-      if (gameInterval) clearInterval(gameInterval);
-      gameInterval = setInterval(drawGame, 120);
-    }
-    
-    // Toggle pause state
-    function togglePause() {
-      if (!gameStarted) return;
-      
-      isPaused = !isPaused;
-      pauseBtn.textContent = isPaused ? "▶️ Resume" : "⏸️ Pause";
-      
-      if (isPaused) {
-        clearInterval(gameInterval);
-        gameInterval = null;
-        ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = "#00ff00";
-        ctx.font = "bold 40px monospace";
-        ctx.textAlign = "center";
-        ctx.fillText("PAUSED", canvas.width / 2, canvas.height / 2);
-      } else {
-        startGame();
-      }
-    }
-    
-    // Update score display
-    function updateScore() {
-      scoreDisplay.textContent = `Player: ${username} | Score: ${score}`;
-    }
-    
-    // Draw game frame
-    function drawGame() {
-      if (isPaused) return;
-      
-      // Apply the next direction at the start of each frame
-      direction = nextDirection;
-      
-      // Clear and draw background
-      ctx.fillStyle = "#111";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      
-      // Draw grid (optional)
-      ctx.strokeStyle = "#0a0a0a";
-      ctx.lineWidth = 0.5;
-      for (let i = 0; i <= canvasSize; i++) {
-        ctx.beginPath();
-        ctx.moveTo(i * box, 0);
-        ctx.lineTo(i * box, canvas.height);
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.moveTo(0, i * box);
-        ctx.lineTo(canvas.width, i * box);
-        ctx.stroke();
-      }
-      
-      // Draw game boundary
-      ctx.strokeStyle = "#00cc00";
-      ctx.lineWidth = 3;
-      ctx.strokeRect(0, 0, canvas.width, canvas.height);
-      
-      // Draw snake
-      snake.forEach((segment, idx) => {
-        ctx.fillStyle = idx === 0 ? "#00ff00" : "#00cc00";
-        ctx.fillRect(segment.x, segment.y, box, box);
-        
-        // Draw a slightly different color for the head
-        if (idx === 0) {
-          ctx.fillStyle = "#00ff00";
-          ctx.beginPath();
-          ctx.arc(segment.x + box/2, segment.y + box/2, box/3, 0, Math.PI * 2);
-          ctx.fill();
-        }
-      });
-      
-      // Draw food
-      if (food.big) {
-        ctx.fillStyle = "#ff9900";
-        ctx.beginPath();
-        ctx.arc(food.x + box/2, food.y + box/2, box/2, 0, Math.PI * 2);
-        ctx.fill();
-        
-        // Draw shine effect
-        ctx.fillStyle = "#ffff00";
-        ctx.beginPath();
-        ctx.arc(food.x + box/3, food.y + box/3, box/6, 0, Math.PI * 2);
-        ctx.fill();
-      } else {
-        ctx.fillStyle = "#ff0000";
-        ctx.beginPath();
-        ctx.arc(food.x + box/2, food.y + box/2, box/3, 0, Math.PI * 2);
-        ctx.fill();
-      }
-      
-      // Calculate next head position
-      let headX = snake[0].x;
-      let headY = snake[0].y;
-      
-      if (direction === "LEFT") headX -= box;
-      else if (direction === "RIGHT") headX += box;
-      else if (direction === "UP") headY -= box;
-      else if (direction === "DOWN") headY += box;
-      
-      // Check collisions: wall or self
-      if (
-        headX < 0 || headX >= canvas.width ||
-        headY < 0 || headY >= canvas.height ||
-        snake.some((seg, i) => i !== 0 && seg.x === headX && seg.y === headY)
-      ) {
-        endGame(false);
-        return;
-      }
-      
-      // New head position object
-      const newHead = { x: headX, y: headY };
-      
-      // Check if food eaten
-      if (headX === food.x && headY === food.y) {
-        foodCount++;
-        score += food.big ? 25 : 10;
-        food = generateFood();
-      } else {
-        snake.pop();
-      }
-      
-      snake.unshift(newHead);
-      updateScore();
-      
-      // Win condition
-      if (score >= 1000) {
+
+    // New head position object
+    const newHead = { x: headX, y: headY };
+
+    // Check if food eaten
+    if (headX === food.x && headY === food.y) {
+      foodCount++;
+      score += food.big ? 25 : 5;
+      (food.big ? bigEatSound : eatSound).play();
+
+      if(score >= 500){
         endGame(true);
+        return;
       }
+
+      food = generateFood();
+    } else {
+      snake.pop();
     }
+
+    snake.unshift(newHead);
+    updateScore();
+  }
+
+  // End game (win=false for lose, true for win)
+  function endGame(win) {
+    clearInterval(gameInterval);
+    gameInterval = null;
+
+    // Save score to leaderboard
+    saveScore();
+
+    modalTitle.textContent = win ? "🎉 You Win!" : "Game Over!";
+    modalMessage.textContent = win 
+      ? `Final Score: ${score}` 
+      : `You scored: ${score}. Try again!`;
     
-    // End game (win=false for lose, true for win)
-    function endGame(win) {
-      clearInterval(gameInterval);
-      gameInterval = null;
-      gameStarted = false;
-      
-      // Save score to leaderboard
-      saveScore();
-      
-      modalTitle.textContent = win ? "🎉 YOU WIN!" : "GAME OVER!";
-      modalMessage.textContent = win 
-        ? `Congratulations ${username}! You reached ${score} points!` 
-        : `${username}, you scored ${score} points. Try again!`;
-      
-      leaderboardList.style.display = "none";
-      showLeaderboardBtn.style.display = "inline-block";
-      restartBtn.style.display = "inline-block";
-      shareBtn.style.display = "inline-block";
-      
-      modalOverlay.classList.add("active");
+    leaderboardList.style.display = "none";
+    showLeaderboardBtn.style.display = "inline-block";
+    restartBtn.style.display = "inline-block";
+    shareBtn.style.display = "inline-block";
+
+    modalOverlay.classList.add("active");
+  }
+
+  // Save score to localStorage leaderboard
+  function saveScore() {
+    if (!username) return;
+
+    let leaderboard = JSON.parse(localStorage.getItem("recallSnakeLeaderboard")) || [];
+    leaderboard.push({ name: username, score: score });
+    leaderboard.sort((a,b) => b.score - a.score);
+    if (leaderboard.length > 10) leaderboard.length = 10; // top 10 only
+    localStorage.setItem("recallSnakeLeaderboard", JSON.stringify(leaderboard));
+  }
+
+  // Display leaderboard list
+  function displayLeaderboard() {
+    let leaderboard = JSON.parse(localStorage.getItem("recallSnakeLeaderboard")) || [];
+    if (leaderboard.length === 0) {
+      leaderboardList.innerHTML = "<li>No scores yet.</li>";
+    } else {
+      leaderboardList.innerHTML = leaderboard
+        .map((entry, i) => `<li>${i+1}. ${entry.name} - ${entry.score}</li>`)
+        .join("");
     }
-    
-    // Save score to localStorage leaderboard
-    function saveScore() {
-      if (!username) return;
-      
-      let leaderboard = JSON.parse(localStorage.getItem("recallSnakeLeaderboard")) || [];
-      leaderboard.push({ name: username, score: score, timestamp: new Date().toISOString() });
-      leaderboard.sort((a, b) => b.score - a.score || new Date(a.timestamp) - new Date(b.timestamp));
-      if (leaderboard.length > 10) leaderboard.length = 10; // top 10 only
-      localStorage.setItem("recallSnakeLeaderboard", JSON.stringify(leaderboard));
-    }
-    
-    // Display leaderboard list
-    function displayLeaderboard() {
-      let leaderboard = JSON.parse(localStorage.getItem("recallSnakeLeaderboard")) || [];
-      if (leaderboard.length === 0) {
-        leaderboardList.innerHTML = "<li>No scores yet. Be the first!</li>";
-      } else {
-        leaderboardList.innerHTML = leaderboard
-          .map((entry, i) => `
-            <li>
-              <span class="rank">${i+1}.</span>
-              <span class="player-name">${entry.name}</span>
-              <span class="player-score">${entry.score}</span>
-            </li>
-          `)
-          .join("");
-      }
-      leaderboardList.style.display = "block";
-    }
-    
-    // Initialize leaderboard if empty
-    if (!localStorage.getItem("recallSnakeLeaderboard")) {
-      const defaultScores = [
-        { name: "SnakeMaster", score: 850, timestamp: "2024-01-01T00:00:00Z" },
-        { name: "GreenNinja", score: 720, timestamp: "2024-01-02T00:00:00Z" },
-        { name: "PixelHunter", score: 650, timestamp: "2024-01-03T00:00:00Z" },
-        { name: "RetroGamer", score: 580, timestamp: "2024-01-04T00:00:00Z" },
-        { name: "CodeWizard", score: 510, timestamp: "2024-01-05T00:00:00Z" }
-      ];
-      localStorage.setItem("recallSnakeLeaderboard", JSON.stringify(defaultScores));
-    }
-    
-    // Pre-fill username with a random name
-    const randomNames = ["SnakeMaster", "GreenNinja", "PixelHunter", "RetroGamer", "CodeWizard"];
-    const randomName = randomNames[Math.floor(Math.random() * randomNames.length)];
-    usernameInput.placeholder = randomName;
-  </script>
+    leaderboardList.style.display = "block";
+  }
+
+  // Control buttons handler
+  function setDirection(dir) {
+    if (!gameInterval) return; // no move if not started
+    if (dir === "LEFT" && direction !== "RIGHT") direction = "LEFT";
+    else if (dir === "UP" && direction !== "DOWN") direction = "UP";
+    else if (dir === "RIGHT" && direction !== "LEFT") direction = "RIGHT";
+    else if (dir === "DOWN" && direction !== "UP") direction = "DOWN";
+  }
+</script>
 </body>
 </html>
