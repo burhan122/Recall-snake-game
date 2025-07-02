@@ -108,23 +108,33 @@
     const canvasSize = 20;
 
     let snake = [{ x: 9 * box, y: 9 * box }];
-    let foodCount = 0;
     let direction = null;
     let score = 0;
-    let isBigFood = false;
+    let foodCount = 0;
 
     const eatSound = document.getElementById("eatSound");
     const bigEatSound = document.getElementById("bigEatSound");
     const winSound = document.getElementById("winSound");
 
+    // ✅ Preload images
+    const snakeHeadImg = new Image();
+    const snakeBodyImg = new Image();
+    const redBallImg = new Image();
+    const bigFoodImg = new Image();
+
+    snakeHeadImg.src = "snake-head.png";
+    snakeBodyImg.src = "snake-body.png";
+    redBallImg.src = "red-ball.png";
+    bigFoodImg.src = "big-food.png";
+
     let food = generateFood();
 
     function generateFood() {
-      isBigFood = (foodCount > 0 && foodCount % 5 === 0);
+      const isBig = foodCount > 0 && foodCount % 5 === 0;
       return {
         x: Math.floor(Math.random() * canvasSize) * box,
         y: Math.floor(Math.random() * canvasSize) * box,
-        big: isBigFood
+        big: isBig
       };
     }
 
@@ -146,16 +156,17 @@
       ctx.fillStyle = "#111";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      for (let i = 0; i < snake.length; i++) {
-        let img = new Image();
-        img.src = i === 0 ? "snake-head.png" : "snake-body.png";
-        ctx.drawImage(img, snake[i].x, snake[i].y, box, box);
-      }
+      // ✅ Draw snake
+      snake.forEach((segment, index) => {
+        const img = index === 0 ? snakeHeadImg : snakeBodyImg;
+        ctx.drawImage(img, segment.x, segment.y, box, box);
+      });
 
-      let foodImg = new Image();
-      foodImg.src = food.big ? "big-food.png" : "red-ball.png";
+      // ✅ Draw food
+      const foodImg = food.big ? bigFoodImg : redBallImg;
       ctx.drawImage(foodImg, food.x, food.y, box, box);
 
+      // ✅ Move snake
       let headX = snake[0].x;
       let headY = snake[0].y;
       if (direction === "LEFT") headX -= box;
@@ -163,6 +174,7 @@
       if (direction === "UP") headY -= box;
       if (direction === "DOWN") headY += box;
 
+      // ✅ Game over
       if (
         headX < 0 || headX >= canvas.width ||
         headY < 0 || headY >= canvas.height ||
@@ -178,17 +190,15 @@
       if (headX === food.x && headY === food.y) {
         foodCount++;
         score += food.big ? 25 : 5;
-        if (food.big) {
-          bigEatSound.play();
-        } else {
-          eatSound.play();
-        }
+        food.big ? bigEatSound.play() : eatSound.play();
+
         if (score >= 500) {
           winSound.play();
           clearInterval(game);
           alert("🎉 You Win! Final Score: " + score);
           location.reload();
         }
+
         food = generateFood();
       } else {
         snake.pop();
@@ -198,7 +208,7 @@
       document.getElementById("scoreDisplay").innerText = "Score: " + score;
     }
 
-    let game = setInterval(drawGame, 100);
+    const game = setInterval(drawGame, 100);
   </script>
 </body>
 </html>
