@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Classic Snake Game</title>
+  <title>Recall Snake Game</title>
   <style>
     body {
       background-color: black;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
       height: 100vh;
       margin: 0;
@@ -23,14 +23,39 @@
       color: #00ff00;
       text-align: center;
       font-family: monospace;
-      position: absolute;
-      top: 20px;
+      margin: 10px 0;
+    }
+
+    .marquee {
+      width: 100%;
+      overflow: hidden;
+      white-space: nowrap;
+      box-sizing: border-box;
+    }
+
+    .marquee span {
+      display: inline-block;
+      padding-left: 100%;
+      animation: marquee 10s linear infinite;
+      color: #00ff00;
+      font-family: monospace;
+      font-size: 18px;
+    }
+
+    @keyframes marquee {
+      0%   { transform: translateX(0%); }
+      100% { transform: translateX(-100%); }
     }
   </style>
 </head>
 <body>
 
-  <h1>Bottom Phone Snake Game 🐍</h1>
+  <!-- 🔁 Scrolling Text -->
+  <div class="marquee">
+    <span>Welcome to Trueworker24 Recall-Snake-Game 🐍</span>
+  </div>
+
+  <h1>Bottom Phone Snake Game</h1>
   <canvas id="game" width="300" height="300"></canvas>
 
   <script>
@@ -57,52 +82,4 @@
 
     function drawGame() {
       ctx.fillStyle = "#111";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      for (let i = 0; i < snake.length; i++) {
-        ctx.fillStyle = i === 0 ? "#00ff00" : "#007700";
-        ctx.fillRect(snake[i].x, snake[i].y, box, box);
-      }
-
-      ctx.fillStyle = "red";
-      ctx.fillRect(food.x, food.y, box, box);
-
-      let headX = snake[0].x;
-      let headY = snake[0].y;
-
-      if (direction === "LEFT") headX -= box;
-      if (direction === "RIGHT") headX += box;
-      if (direction === "UP") headY -= box;
-      if (direction === "DOWN") headY += box;
-
-      // Game over conditions
-      if (
-        headX < 0 || headX >= canvas.width ||
-        headY < 0 || headY >= canvas.height ||
-        snake.some((s, i) => i !== 0 && s.x === headX && s.y === headY)
-      ) {
-        clearInterval(game);
-        alert("Game Over! Score: " + score);
-        location.reload();
-      }
-
-      let newHead = { x: headX, y: headY };
-
-      if (headX === food.x && headY === food.y) {
-        score++;
-        food = {
-          x: Math.floor(Math.random() * canvasSize) * box,
-          y: Math.floor(Math.random() * canvasSize) * box,
-        };
-      } else {
-        snake.pop();
-      }
-
-      snake.unshift(newHead);
-    }
-
-    let game = setInterval(drawGame, 100);
-  </script>
-</body>
-</html>
-
+      ctx.fillRect(0, 0, ca
