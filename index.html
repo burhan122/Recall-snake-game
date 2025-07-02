@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en" >
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Recall Snake Game</title>
   <style>
     body {
@@ -12,42 +12,46 @@
       align-items: center;
       height: 100vh;
       margin: 0;
-      font-family: monospace;
-      color: #00ff00;
-      user-select: none;
     }
+
     canvas {
       border: 3px solid #00ff00;
       background-color: #111;
-      display: block;
-      margin: 0 auto;
     }
+
     h1 {
-      margin: 10px 0;
+      color: #00ff00;
       text-align: center;
+      font-family: monospace;
+      margin: 10px 0;
     }
+
     .marquee {
       width: 100%;
       overflow: hidden;
       white-space: nowrap;
       box-sizing: border-box;
-      margin-bottom: 10px;
     }
+
     .marquee span {
       display: inline-block;
       padding-left: 100%;
       animation: marquee 10s linear infinite;
       color: #00ff00;
+      font-family: monospace;
       font-size: 18px;
     }
+
     @keyframes marquee {
       0%   { transform: translateX(0%); }
       100% { transform: translateX(-100%); }
     }
+
     .controls {
       margin-top: 15px;
       text-align: center;
     }
+
     .controls button {
       width: 60px;
       height: 60px;
@@ -59,105 +63,30 @@
       border-radius: 10px;
       cursor: pointer;
       box-shadow: 0 0 10px #00ff00;
-      transition: 0.2s;
     }
-    .controls button:hover {
+
+    .controls button:active {
       background-color: #00ff00;
       color: black;
     }
-    .score {
+
+    .score, .leaderboard {
+      color: #00ff00;
+      font-family: monospace;
       font-size: 18px;
       margin: 5px;
-      text-align: center;
     }
-    #startOverlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.9);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      color: #00ff00;
-      font-size: 24px;
-      z-index: 999;
-    }
-    #startOverlay input {
-      background: black;
-      color: #00ff00;
-      font-size: 22px;
-      border: 2px solid #00ff00;
-      border-radius: 5px;
-      padding: 8px 12px;
-      margin-top: 15px;
-      width: 250px;
-      text-align: center;
-    }
-    #startOverlay button {
-      margin-top: 15px;
-      width: 150px;
-      cursor: pointer;
-    }
-    #modalOverlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.95);
+
+    #shareBtn {
       display: none;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
-      color: #00ff00;
-      font-size: 20px;
-      padding: 20px;
-    }
-    #modalOverlay.active {
-      display: flex;
-    }
-    #modalContent {
-      background: #111;
-      border: 3px solid #00ff00;
-      padding: 20px;
-      border-radius: 10px;
-      max-width: 400px;
-      width: 100%;
-      text-align: center;
-      position: relative;
-    }
-    #modalContent h2 {
-      margin-top: 0;
-      margin-bottom: 15px;
-    }
-    #modalContent button {
+      margin-top: 10px;
+      padding: 10px 20px;
       background-color: #00ff00;
       color: black;
+      font-family: monospace;
       border: none;
-      padding: 10px 20px;
-      font-size: 18px;
-      border-radius: 6px;
+      border-radius: 5px;
       cursor: pointer;
-      margin: 5px;
-    }
-    #modalContent #closeModalBtn {
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      background: transparent;
-      color: #00ff00;
-      font-size: 24px;
-      font-weight: bold;
-      border: none;
-      cursor: pointer;
-    }
-    #leaderboardList {
-      max-height: 200px;
-      overflow-y: auto;
-      text-align: left;
-      margin: 10px 0;
-      padding-left: 10px;
-    }
-    #leaderboardList li {
-      margin-bottom: 6px;
     }
   </style>
 </head>
@@ -170,295 +99,153 @@
   <h1>Recall Snake Game</h1>
   <div class="score" id="scoreDisplay">Score: 0</div>
   <canvas id="game" width="300" height="300"></canvas>
+  <div class="leaderboard" id="leaderboard"></div>
 
   <div class="controls">
-    <button onclick="setDirection('UP')">⬆️</button><br/>
-    <button onclick="setDirection('LEFT')">⬅️</button>
-    <button onclick="setDirection('DOWN')">⬇️</button>
-    <button onclick="setDirection('RIGHT')">➡️</button>
-  </div>
-
-  <!-- Start Overlay -->
-  <div id="startOverlay">
-    <label for="usernameInput">Enter Your Name to Start</label>
-    <input id="usernameInput" type="text" maxlength="15" placeholder="Your Name" autocomplete="off" />
-    <button id="startBtn">Start Game</button>
-  </div>
-
-  <!-- Modal Overlay (Game Over/Win + Leaderboard + Share) -->
-  <div id="modalOverlay" aria-modal="true" role="dialog">
-    <div id="modalContent">
-      <button id="closeModalBtn" title="Close">&times;</button>
-      <h2 id="modalTitle">Game Over</h2>
-      <p id="modalMessage"></p>
-      <button id="restartBtn">Restart Game</button>
-      <button id="showLeaderboardBtn">Show Leaderboard</button>
-      <button id="shareBtn">Share Score on X</button>
-      <ul id="leaderboardList" style="display:none;"></ul>
+    <div><button onclick="setDirection('UP')">⬆️</button></div>
+    <div>
+      <button onclick="setDirection('LEFT')">⬅️</button>
+      <button onclick="setDirection('DOWN')">⬇️</button>
+      <button onclick="setDirection('RIGHT')">➡️</button>
     </div>
   </div>
 
-<script>
-  const canvas = document.getElementById("game");
-  const ctx = canvas.getContext("2d");
-  const box = 15;
-  const canvasSize = 20;
+  <button id="shareBtn" onclick="shareOnX()">📤 Share Score on X</button>
 
-  // Sizes for images (you can tweak here)
-  const snakeSize = 20; // px for snake segment
-  const smallBallSize = 15;
-  const bigBallSize = 30;
+  <audio id="eatSound" src="eat.mp3"></audio>
+  <audio id="bigEatSound" src="big-eat.mp3"></audio>
+  <audio id="winSound" src="win.mp3"></audio>
 
-  let snake = [];
-  let direction = null;
-  let score = 0;
-  let foodCount = 0;
-  let food = null;
-  let gameInterval = null;
-  let username = "";
+  <script>
+    const canvas = document.getElementById("game");
+    const ctx = canvas.getContext("2d");
+    const box = 15;
+    const canvasSize = 20;
+    const spriteScale = 1.5;
+    const spriteSize = box * spriteScale;
 
-  // Images - replace URLs with your HD assets if you want
-  const snakeHeadImg = new Image();
-  const snakeBodyImg = new Image();
-  const redBallImg = new Image();
-  const bigFoodImg = new Image();
+    let snake = [{ x: 9 * box, y: 9 * box }];
+    let direction = null;
+    let score = 0;
+    let foodCount = 0;
+    let playerName = prompt("Enter your player name:");
+    if (!playerName) playerName = "Anonymous";
 
-  // Example HD images URLs:
-  const snakeHeadURL = "https://iili.io/FYpkV1f.png"; // You can replace
-  const snakeBodyURL = "https://iili.io/FYpkV1f.png";
-  const redBallURL = "https://iili.io/FYpkV1f.png";
-  const bigBallURL = "https://iili.io/Fa9MMAu.th.png";
+    const leaderboard = JSON.parse(localStorage.getItem("recall_leaderboard") || "[]");
 
-  snakeHeadImg.src = snakeHeadURL;
-  snakeBodyImg.src = snakeBodyURL;
-  redBallImg.src = redBallURL;
-  bigFoodImg.src = bigBallURL;
+    const eatSound = document.getElementById("eatSound");
+    const bigEatSound = document.getElementById("bigEatSound");
+    const winSound = document.getElementById("winSound");
 
-  // Sounds (replace URLs or add your own mp3)
-  const eatSound = new Audio("eat.mp3");
-  const bigEatSound = new Audio("big-eat.mp3");
-  const winSound = new Audio("win.mp3");
+    const imageURL = "https://iili.io/FYpkV1f.png";
+    const snakeHeadImg = new Image(); snakeHeadImg.src = imageURL;
+    const snakeBodyImg = new Image(); snakeBodyImg.src = imageURL;
+    const redBallImg = new Image(); redBallImg.src = imageURL;
+    const bigFoodImg = new Image(); bigFoodImg.src = "https://iili.io/Fa9MMAu.th.png";
 
-  // UI Elements
-  const scoreDisplay = document.getElementById("scoreDisplay");
-  const startOverlay = document.getElementById("startOverlay");
-  const usernameInput = document.getElementById("usernameInput");
-  const startBtn = document.getElementById("startBtn");
-  const modalOverlay = document.getElementById("modalOverlay");
-  const modalTitle = document.getElementById("modalTitle");
-  const modalMessage = document.getElementById("modalMessage");
-  const restartBtn = document.getElementById("restartBtn");
-  const showLeaderboardBtn = document.getElementById("showLeaderboardBtn");
-  const shareBtn = document.getElementById("shareBtn");
-  const closeModalBtn = document.getElementById("closeModalBtn");
-  const leaderboardList = document.getElementById("leaderboardList");
+    let food = generateFood();
 
-  // Start button click
-  startBtn.addEventListener("click", () => {
-    const name = usernameInput.value.trim();
-    if (!name) {
-      alert("Please enter your name to start!");
-      return;
+    function generateFood() {
+      const isBig = foodCount > 0 && foodCount % 5 === 0;
+      return {
+        x: Math.floor(Math.random() * canvasSize) * box,
+        y: Math.floor(Math.random() * canvasSize) * box,
+        big: isBig
+      };
     }
-    username = name;
-    startOverlay.style.display = "none";
-    resetGame();
-    startGame();
-  });
 
-  // Restart button click
-  restartBtn.addEventListener("click", () => {
-    modalOverlay.classList.remove("active");
-    resetGame();
-    startGame();
-  });
+    function setDirection(dir) {
+      if (dir === "LEFT" && direction !== "RIGHT") direction = "LEFT";
+      if (dir === "UP" && direction !== "DOWN") direction = "UP";
+      if (dir === "RIGHT" && direction !== "LEFT") direction = "RIGHT";
+      if (dir === "DOWN" && direction !== "UP") direction = "DOWN";
+    }
 
-  // Show leaderboard button click
-  showLeaderboardBtn.addEventListener("click", () => {
-    showLeaderboardBtn.style.display = "none";
-    restartBtn.style.display = "inline-block";
-    shareBtn.style.display = "inline-block";
-    displayLeaderboard();
-  });
-
-  // Share button click
-  shareBtn.addEventListener("click", () => {
-    const text = encodeURIComponent(`I scored ${score} points in Recall Snake Game! 🐍 #RecallSnakeGame`);
-    const url = `https://x.com/intent/tweet?text=${text}`;
-    window.open(url, "_blank", "width=600,height=400");
-  });
-
-  // Close modal button click
-  closeModalBtn.addEventListener("click", () => {
-    modalOverlay.classList.remove("active");
-  });
-
-  // Keyboard controls
-  document.addEventListener("keydown", (e) => {
-    if (!gameInterval) return; // don't move if game not started
-    if (e.key === "ArrowLeft") setDirection("LEFT");
-    else if (e.key === "ArrowUp") setDirection("UP");
-    else if (e.key === "ArrowRight") setDirection("RIGHT");
-    else if (e.key === "ArrowDown") setDirection("DOWN");
-  });
-
-  // Direction setter with safety
-  function setDirection(dir) {
-    if (dir === "LEFT" && direction !== "RIGHT") direction = "LEFT";
-    else if (dir === "UP" && direction !== "DOWN") direction = "UP";
-    else if (dir === "RIGHT" && direction !== "LEFT") direction = "RIGHT";
-    else if (dir === "DOWN" && direction !== "UP") direction = "DOWN";
-  }
-
-  // Generate food object
-  function generateFood() {
-    const isBig = foodCount > 0 && foodCount % 5 === 0;
-    return {
-      x: Math.floor(Math.random() * canvasSize) * box,
-      y: Math.floor(Math.random() * canvasSize) * box,
-      big: isBig
-    };
-  }
-
-  // Reset game state
-  function resetGame() {
-    snake = [{ x: 9 * box, y: 9 * box }];
-    direction = null;
-    score = 0;
-    foodCount = 0;
-    food = generateFood();
-    updateScore();
-  }
-
-  // Start game loop
-  function startGame() {
-    if (gameInterval) clearInterval(gameInterval);
-    direction = "RIGHT"; // default start direction
-    gameInterval = setInterval(drawGame, 100);
-  }
-
-  // Update score display
-  function updateScore() {
-    scoreDisplay.textContent = `Player: ${username} | Score: ${score}`;
-  }
-
-  // Draw game frame
-  function drawGame() {
-    // Clear and draw background
-    ctx.fillStyle = "#111";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    // Draw game boundary lines (overline fixes)
-    ctx.strokeStyle = "#00ff00";
-    ctx.lineWidth = 3;
-    ctx.strokeRect(0, 0, canvas.width, canvas.height);
-
-    // Draw snake
-    snake.forEach((segment, idx) => {
-      const img = idx === 0 ? snakeHeadImg : snakeBodyImg;
-      const size = idx === 0 ? snakeSize : snakeSize * 0.9; // head bigger
-      ctx.drawImage(img, segment.x + (box - size)/2, segment.y + (box - size)/2, size, size);
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowLeft") setDirection("LEFT");
+      if (e.key === "ArrowUp") setDirection("UP");
+      if (e.key === "ArrowRight") setDirection("RIGHT");
+      if (e.key === "ArrowDown") setDirection("DOWN");
     });
 
-    // Draw food
-    const foodImg = food.big ? bigFoodImg : redBallImg;
-    const fSize = food.big ? bigBallSize : smallBallSize;
-    ctx.drawImage(foodImg, food.x + (box - fSize)/2, food.y + (box - fSize)/2, fSize, fSize);
+    function updateLeaderboard() {
+      leaderboard.push({ name: playerName, score });
+      leaderboard.sort((a, b) => b.score - a.score);
+      if (leaderboard.length > 5) leaderboard.length = 5;
+      localStorage.setItem("recall_leaderboard", JSON.stringify(leaderboard));
 
-    // Calculate next head position
-    let headX = snake[0].x;
-    let headY = snake[0].y;
-    if (direction === "LEFT") headX -= box;
-    else if (direction === "RIGHT") headX += box;
-    else if (direction === "UP") headY -= box;
-    else if (direction === "DOWN") headY += box;
-
-    // Check collisions: wall or self
-    if (
-      headX < 0 || headX >= canvas.width ||
-      headY < 0 || headY >= canvas.height ||
-      snake.some((seg, i) => i !== 0 && seg.x === headX && seg.y === headY)
-    ) {
-      endGame(false);
-      return;
+      const board = leaderboard.map((p, i) => `${i + 1}. ${p.name}: ${p.score}`).join("<br>");
+      document.getElementById("leaderboard").innerHTML = `<h3>🏆 Leaderboard</h3>` + board;
     }
 
-    // New head position object
-    const newHead = { x: headX, y: headY };
+    function endGame(message) {
+      clearInterval(game);
+      alert(message);
+      updateLeaderboard();
+      document.getElementById("shareBtn").style.display = "inline-block";
+    }
 
-    // Check if food eaten
-    if (headX === food.x && headY === food.y) {
-      foodCount++;
-      score += food.big ? 25 : 5;
-      (food.big ? bigEatSound : eatSound).play();
+    function shareOnX() {
+      const text = encodeURIComponent(playerName + " scored " + score + " points in the Recall Snake Game! 🐍 #RecallSnakeGame");
+      const url = "https://x.com/intent/tweet?text=" + text;
+      window.open(url, "_blank");
+    }
 
-      if(score >= 500){
-        endGame(true);
+    function drawGame() {
+      ctx.fillStyle = "#111";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.strokeStyle = "#00ff00";
+      ctx.lineWidth = 3;
+      ctx.strokeRect(0, 0, canvas.width, canvas.height);
+
+      snake.forEach((segment, index) => {
+        const img = index === 0 ? snakeHeadImg : snakeBodyImg;
+        ctx.drawImage(img, segment.x, segment.y, box, box);
+      });
+
+      const foodImg = food.big ? bigFoodImg : redBallImg;
+      ctx.drawImage(foodImg, food.x, food.y, box, box);
+
+      let headX = snake[0].x;
+      let headY = snake[0].y;
+      if (direction === "LEFT") headX -= box;
+      if (direction === "RIGHT") headX += box;
+      if (direction === "UP") headY -= box;
+      if (direction === "DOWN") headY += box;
+
+      if (
+        headX < 0 || headX >= canvas.width ||
+        headY < 0 || headY >= canvas.height ||
+        snake.slice(1).some(seg => seg.x === headX && seg.y === headY)
+      ) {
+        endGame("Game Over! Score: " + score);
         return;
       }
 
-      food = generateFood();
-    } else {
-      snake.pop();
+      let newHead = { x: headX, y: headY };
+
+      if (headX === food.x && headY === food.y) {
+        foodCount++;
+        score += food.big ? 25 : 5;
+        food.big ? bigEatSound.play() : eatSound.play();
+
+        if (score >= 500) {
+          winSound.play();
+          endGame("🎉 You Win! Final Score: " + score);
+          return;
+        }
+
+        food = generateFood();
+      } else {
+        snake.pop();
+      }
+
+      snake.unshift(newHead);
+      document.getElementById("scoreDisplay").innerText = "Score: " + score;
     }
 
-    snake.unshift(newHead);
-    updateScore();
-  }
-
-  // End game (win=false for lose, true for win)
-  function endGame(win) {
-    clearInterval(gameInterval);
-    gameInterval = null;
-
-    // Save score to leaderboard
-    saveScore();
-
-    modalTitle.textContent = win ? "🎉 You Win!" : "Game Over!";
-    modalMessage.textContent = win 
-      ? `Final Score: ${score}` 
-      : `You scored: ${score}. Try again!`;
-    
-    leaderboardList.style.display = "none";
-    showLeaderboardBtn.style.display = "inline-block";
-    restartBtn.style.display = "inline-block";
-    shareBtn.style.display = "inline-block";
-
-    modalOverlay.classList.add("active");
-  }
-
-  // Save score to localStorage leaderboard
-  function saveScore() {
-    if (!username) return;
-
-    let leaderboard = JSON.parse(localStorage.getItem("recallSnakeLeaderboard")) || [];
-    leaderboard.push({ name: username, score: score });
-    leaderboard.sort((a,b) => b.score - a.score);
-    if (leaderboard.length > 10) leaderboard.length = 10; // top 10 only
-    localStorage.setItem("recallSnakeLeaderboard", JSON.stringify(leaderboard));
-  }
-
-  // Display leaderboard list
-  function displayLeaderboard() {
-    let leaderboard = JSON.parse(localStorage.getItem("recallSnakeLeaderboard")) || [];
-    if (leaderboard.length === 0) {
-      leaderboardList.innerHTML = "<li>No scores yet.</li>";
-    } else {
-      leaderboardList.innerHTML = leaderboard
-        .map((entry, i) => `<li>${i+1}. ${entry.name} - ${entry.score}</li>`)
-        .join("");
-    }
-    leaderboardList.style.display = "block";
-  }
-
-  // Control buttons handler
-  function setDirection(dir) {
-    if (!gameInterval) return; // no move if not started
-    if (dir === "LEFT" && direction !== "RIGHT") direction = "LEFT";
-    else if (dir === "UP" && direction !== "DOWN") direction = "UP";
-    else if (dir === "RIGHT" && direction !== "LEFT") direction = "RIGHT";
-    else if (dir === "DOWN" && direction !== "UP") direction = "DOWN";
-  }
-</script>
+    const game = setInterval(drawGame, 100);
+  </script>
 </body>
 </html>
