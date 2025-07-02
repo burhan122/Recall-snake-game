@@ -6,7 +6,9 @@
   <title>Recall Snake Game</title>
   <style>
     body {
-      background-color: black;
+      background-image: url('background.png');
+      background-size: cover;
+      background-repeat: no-repeat;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -16,7 +18,7 @@
 
     canvas {
       border: 3px solid #00ff00;
-      background-color: #111;
+      background-color: rgba(0, 0, 0, 0.6);
     }
 
     h1 {
@@ -57,64 +59,78 @@
       height: 60px;
       font-size: 24px;
       margin: 5px;
-      background-color: #222;
+      background-color: #111;
       color: #00ff00;
       border: 2px solid #00ff00;
       border-radius: 10px;
       cursor: pointer;
+      box-shadow: 0 0 10px #00ff00;
     }
 
     .controls button:active {
       background-color: #00ff00;
       color: black;
     }
+
+    .score {
+      color: #00ff00;
+      font-family: monospace;
+      font-size: 18px;
+      margin: 5px;
+    }
   </style>
 </head>
 <body>
 
-  <!-- 🔁 Scrolling Text -->
   <div class="marquee">
     <span>Welcome to Trueworker24 Recall-Snake-Game 🐍</span>
   </div>
 
+  <img src="snake-logo.png" alt="Snake Logo" style="width: 100px; margin-top: 10px;">
   <h1>Recall Snake Game</h1>
+  <div class="score" id="scoreDisplay">Score: 0</div>
   <canvas id="game" width="300" height="300"></canvas>
 
-  <!-- 📱 On-screen Controls -->
   <div class="controls">
-    <div>
-      <button onclick="setDirection('UP')">⬆️</button>
-    </div>
+    <div><button onclick="setDirection('UP')">⬆️</button></div>
     <div>
       <button onclick="setDirection('LEFT')">⬅️</button>
-      <button onclick="setDirection('DOWN')">⬇️</button>
+      <button onclick="setDirection('DOWN')">🔽️</button>
       <button onclick="setDirection('RIGHT')">➡️</button>
     </div>
   </div>
 
+  <audio id="eatSound" src="eat.mp3"></audio>
+  <audio id="bigEatSound" src="big-eat.mp3"></audio>
+  <audio id="winSound" src="win.mp3"></audio>
+
   <script>
     const canvas = document.getElementById("game");
     const ctx = canvas.getContext("2d");
-
     const box = 15;
     const canvasSize = 20;
     let snake = [{ x: 9 * box, y: 9 * box }];
-    let food = {
-      x: Math.floor(Math.random() * canvasSize) * box,
-      y: Math.floor(Math.random() * canvasSize) * box,
-    };
-
+    let foodCount = 0;
+    let isBigFood = false;
     let direction = null;
     let score = 0;
+    let game;
 
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "ArrowLeft" && direction !== "RIGHT") direction = "LEFT";
-      if (e.key === "ArrowUp" && direction !== "DOWN") direction = "UP";
-      if (e.key === "ArrowRight" && direction !== "LEFT") direction = "RIGHT";
-      if (e.key === "ArrowDown" && direction !== "UP") direction = "DOWN";
-    });
+    const eatSound = document.getElementById("eatSound");
+    const bigEatSound = document.getElementById("bigEatSound");
+    const winSound = document.getElementById("winSound");
 
-    // ✅ Button-based direction control
+    let food = generateFood();
+
+    function generateFood() {
+      isBigFood = (foodCount > 0 && foodCount % 5 === 0);
+      return {
+        x: Math.floor(Math.random() * canvasSize) * box,
+        y: Math.floor(Math.random() * canvasSize) * box,
+        big: isBigFood
+      };
+    }
+
     function setDirection(dir) {
       if (dir === "LEFT" && direction !== "RIGHT") direction = "LEFT";
       if (dir === "UP" && direction !== "DOWN") direction = "UP";
@@ -122,30 +138,37 @@
       if (dir === "DOWN" && direction !== "UP") direction = "DOWN";
     }
 
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowLeft") setDirection("LEFT");
+      if (e.key === "ArrowUp") setDirection("UP");
+      if (e.key === "ArrowRight") setDirection("RIGHT");
+      if (e.key === "ArrowDown") setDirection("DOWN");
+    });
+
     function drawGame() {
-      ctx.fillStyle = "#111";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      ctx.drawImage(document.getElementById("bgImg"), 0, 0, canvas.width, canvas.height);
 
       // Draw snake
       for (let i = 0; i < snake.length; i++) {
-        ctx.fillStyle = i === 0 ? "#00ff00" : "#007700";
-        ctx.fillRect(snake[i].x, snake[i].y, box, box);
+        let img = new Image();
+        img.src = i === 0 ? "snake-head.png" : "snake-body.png";
+        ctx.drawImage(img, snake[i].x, snake[i].y, box, box);
       }
 
       // Draw food
-      ctx.fillStyle = "red";
-      ctx.fillRect(food.x, food.y, box, box);
+      let foodImg = new Image();
+      foodImg.src = food.big ? "big-food.png" : "red-ball.png";
+      ctx.drawImage(foodImg, food.x, food.y, box, box);
 
-      // Move snake
       let headX = snake[0].x;
       let headY = snake[0].y;
-
       if (direction === "LEFT") headX -= box;
       if (direction === "RIGHT") headX += box;
       if (direction === "UP") headY -= box;
       if (direction === "DOWN") headY += box;
 
-      // Game Over check
       if (
         headX < 0 || headX >= canvas.width ||
         headY < 0 || headY >= canvas.height ||
@@ -159,19 +182,36 @@
       let newHead = { x: headX, y: headY };
 
       if (headX === food.x && headY === food.y) {
-        score++;
-        food = {
-          x: Math.floor(Math.random() * canvasSize) * box,
-          y: Math.floor(Math.random() * canvasSize) * box,
-        };
+        foodCount++;
+        score += food.big ? 25 : 5;
+        if (score >= 500) {
+          winSound.play();
+          clearInterval(game);
+          alert("🎉 You Win! Final Score: " + score);
+          location.reload();
+        }
+        (food.big ? bigEatSound : eatSound).play();
+        food = generateFood();
       } else {
         snake.pop();
       }
 
       snake.unshift(newHead);
+      document.getElementById("scoreDisplay").innerText = "Score: " + score;
     }
 
-    let game = setInterval(drawGame, 100);
+    window.onload = () => {
+      const bg = new Image();
+      bg.src = 'background.png';
+      bg.onload = () => {
+        const bgImg = document.createElement('img');
+        bgImg.id = 'bgImg';
+        bgImg.src = bg.src;
+        bgImg.style.display = 'none';
+        document.body.appendChild(bgImg);
+        game = setInterval(drawGame, 100);
+      };
+    }
   </script>
 </body>
 </html>
