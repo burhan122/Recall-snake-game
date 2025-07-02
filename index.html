@@ -100,6 +100,18 @@
       if (direction === "UP") headY -= box;
       if (direction === "DOWN") headY += box;
 
+      <!-- 🔽 On-screen Controls -->
+<div style="margin-top: 15px;">
+  <div style="text-align: center;">
+    <button onclick="setDirection('UP')">⬆️</button>
+  </div>
+  <div style="text-align: center;">
+    <button onclick="setDirection('LEFT')">⬅️</button>
+    <button onclick="setDirection('DOWN')">⬇️</button>
+    <button onclick="setDirection('RIGHT')">➡️</button>
+  </div>
+</div>
+
       if (
         headX < 0 || headX >= canvas.width ||
         headY < 0 || headY >= canvas.height ||
