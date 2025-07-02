@@ -46,6 +46,28 @@
       0%   { transform: translateX(0%); }
       100% { transform: translateX(-100%); }
     }
+
+    .controls {
+      margin-top: 15px;
+      text-align: center;
+    }
+
+    .controls button {
+      width: 60px;
+      height: 60px;
+      font-size: 24px;
+      margin: 5px;
+      background-color: #222;
+      color: #00ff00;
+      border: 2px solid #00ff00;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .controls button:active {
+      background-color: #00ff00;
+      color: black;
+    }
   </style>
 </head>
 <body>
@@ -57,6 +79,18 @@
 
   <h1>Bottom Phone Snake Game</h1>
   <canvas id="game" width="300" height="300"></canvas>
+
+  <!-- 📱 On-screen Controls -->
+  <div class="controls">
+    <div>
+      <button onclick="setDirection('UP')">⬆️</button>
+    </div>
+    <div>
+      <button onclick="setDirection('LEFT')">⬅️</button>
+      <button onclick="setDirection('DOWN')">⬇️</button>
+      <button onclick="setDirection('RIGHT')">➡️</button>
+    </div>
+  </div>
 
   <script>
     const canvas = document.getElementById("game");
@@ -80,6 +114,14 @@
       if (e.key === "ArrowDown" && direction !== "UP") direction = "DOWN";
     });
 
+    // ✅ On-screen button controls
+    function setDirection(dir) {
+      if (dir === "LEFT" && direction !== "RIGHT") direction = "LEFT";
+      if (dir === "UP" && direction !== "DOWN") direction = "UP";
+      if (dir === "RIGHT" && direction !== "LEFT") direction = "RIGHT";
+      if (dir === "DOWN" && direction !== "UP") direction = "DOWN";
+    }
+
     function drawGame() {
       ctx.fillStyle = "#111";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -99,18 +141,6 @@
       if (direction === "RIGHT") headX += box;
       if (direction === "UP") headY -= box;
       if (direction === "DOWN") headY += box;
-
-      <!-- 🔽 On-screen Controls -->
-<div style="margin-top: 15px;">
-  <div style="text-align: center;">
-    <button onclick="setDirection('UP')">⬆️</button>
-  </div>
-  <div style="text-align: center;">
-    <button onclick="setDirection('LEFT')">⬅️</button>
-    <button onclick="setDirection('DOWN')">⬇️</button>
-    <button onclick="setDirection('RIGHT')">➡️</button>
-  </div>
-</div>
 
       if (
         headX < 0 || headX >= canvas.width ||
