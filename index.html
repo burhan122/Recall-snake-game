@@ -76,6 +76,18 @@
       font-size: 18px;
       margin: 5px;
     }
+
+    #shareBtn {
+      display: none;
+      margin-top: 10px;
+      padding: 10px 20px;
+      background-color: #00ff00;
+      color: black;
+      font-family: monospace;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -97,6 +109,8 @@
     </div>
   </div>
 
+  <button id="shareBtn" onclick="shareOnX()">📤 Share Score on X</button>
+
   <audio id="eatSound" src="eat.mp3"></audio>
   <audio id="bigEatSound" src="big-eat.mp3"></audio>
   <audio id="winSound" src="win.mp3"></audio>
@@ -104,8 +118,10 @@
   <script>
     const canvas = document.getElementById("game");
     const ctx = canvas.getContext("2d");
-    const box = 50;
-    const canvasSize = 50;
+    const box = 15;
+    const canvasSize = 20;
+    const spriteScale = 1.5;
+    const spriteSize = box * spriteScale;
 
     let snake = [{ x: 9 * box, y: 9 * box }];
     let direction = null;
@@ -116,16 +132,16 @@
     const bigEatSound = document.getElementById("bigEatSound");
     const winSound = document.getElementById("winSound");
 
-    // ✅ Preload images
     const snakeHeadImg = new Image();
     const snakeBodyImg = new Image();
     const redBallImg = new Image();
     const bigFoodImg = new Image();
 
-    snakeHeadImg.src = "https://iili.io/FYpkV1f.png";
-    snakeBodyImg.src = "https://iili.io/FYpkV1f.png";
-    redBallImg.src = "https://iili.io/FYpkV1f.png";
-    bigFoodImg.src = "https://iili.io/FYpkV1f.png";
+    const imageURL = "https://iili.io/FYpkV1f.png";
+    snakeHeadImg.src = imageURL;
+    snakeBodyImg.src = imageURL;
+    redBallImg.src = imageURL;
+    bigFoodImg.src = imageURL;
 
     let food = generateFood();
 
@@ -152,21 +168,30 @@
       if (e.key === "ArrowDown") setDirection("DOWN");
     });
 
+    function endGame(message) {
+      clearInterval(game);
+      alert(message);
+      document.getElementById("shareBtn").style.display = "inline-block";
+    }
+
+    function shareOnX() {
+      const text = encodeURIComponent("I scored " + score + " points in the Recall Snake Game! 🐍 #RecallSnakeGame");
+      const url = "https://x.com/intent/tweet?text=" + text;
+      window.open(url, "_blank");
+    }
+
     function drawGame() {
       ctx.fillStyle = "#111";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // ✅ Draw snake
       snake.forEach((segment, index) => {
         const img = index === 0 ? snakeHeadImg : snakeBodyImg;
-        ctx.drawImage(img, segment.x, segment.y, box, box);
+        ctx.drawImage(img, segment.x, segment.y, spriteSize, spriteSize);
       });
 
-      // ✅ Draw food
       const foodImg = food.big ? bigFoodImg : redBallImg;
-      ctx.drawImage(foodImg, food.x, food.y, box, box);
+      ctx.drawImage(foodImg, food.x, food.y, spriteSize, spriteSize);
 
-      // ✅ Move snake
       let headX = snake[0].x;
       let headY = snake[0].y;
       if (direction === "LEFT") headX -= box;
@@ -174,15 +199,13 @@
       if (direction === "UP") headY -= box;
       if (direction === "DOWN") headY += box;
 
-      // ✅ Game over
       if (
         headX < 0 || headX >= canvas.width ||
         headY < 0 || headY >= canvas.height ||
         snake.some((s, i) => i !== 0 && s.x === headX && s.y === headY)
       ) {
-        clearInterval(game);
-        alert("Game Over! Score: " + score);
-        location.reload();
+        endGame("Game Over! Score: " + score);
+        return;
       }
 
       let newHead = { x: headX, y: headY };
@@ -194,9 +217,8 @@
 
         if (score >= 500) {
           winSound.play();
-          clearInterval(game);
-          alert("🎉 You Win! Final Score: " + score);
-          location.reload();
+          endGame("🎉 You Win! Final Score: " + score);
+          return;
         }
 
         food = generateFood();
