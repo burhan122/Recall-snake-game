@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" >
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -12,44 +12,42 @@
       align-items: center;
       height: 100vh;
       margin: 0;
-      position: relative;
       font-family: monospace;
       color: #00ff00;
+      user-select: none;
     }
-
     canvas {
       border: 3px solid #00ff00;
       background-color: #111;
+      display: block;
+      margin: 0 auto;
     }
-
     h1 {
       margin: 10px 0;
+      text-align: center;
     }
-
     .marquee {
       width: 100%;
       overflow: hidden;
       white-space: nowrap;
       box-sizing: border-box;
+      margin-bottom: 10px;
     }
-
     .marquee span {
       display: inline-block;
       padding-left: 100%;
       animation: marquee 10s linear infinite;
+      color: #00ff00;
+      font-size: 18px;
     }
-
     @keyframes marquee {
-      0% { transform: translateX(0%); }
+      0%   { transform: translateX(0%); }
       100% { transform: translateX(-100%); }
     }
-
     .controls {
       margin-top: 15px;
       text-align: center;
-      user-select: none;
     }
-
     .controls button {
       width: 60px;
       height: 60px;
@@ -61,117 +59,106 @@
       border-radius: 10px;
       cursor: pointer;
       box-shadow: 0 0 10px #00ff00;
-      transition: background-color 0.3s;
+      transition: 0.2s;
     }
-
-    .controls button:active {
+    .controls button:hover {
       background-color: #00ff00;
       color: black;
     }
-
     .score {
       font-size: 18px;
       margin: 5px;
+      text-align: center;
     }
-
-    /* New buttons container, positioned relative to canvas */
-    .game-buttons {
-      width: 300px; /* same width as canvas */
-      position: relative;
-      margin-top: 10px;
-    }
-
-    /* Restart button - left below canvas */
-    #restartBtn {
-      position: absolute;
-      left: 0;
-      top: -50px; /* above canvas (or adjust as needed) */
-      background-color: #00ff00;
-      color: black;
-      border: none;
-      padding: 10px 16px;
-      font-size: 16px;
-      border-radius: 6px;
-      cursor: pointer;
-      box-shadow: 0 0 10px #00ff00;
-      transition: background-color 0.3s;
-    }
-    #restartBtn:hover {
-      background-color: #00cc00;
-    }
-
-    /* Leaderboard button - right below canvas */
-    #leaderboardBtn {
-      position: absolute;
-      right: 0;
-      top: -50px; /* align horizontally with restart button */
-      background-color: #00ff00;
-      color: black;
-      border: none;
-      padding: 10px 16px;
-      font-size: 16px;
-      border-radius: 6px;
-      cursor: pointer;
-      box-shadow: 0 0 10px #00ff00;
-      transition: background-color 0.3s;
-    }
-    #leaderboardBtn:hover {
-      background-color: #00cc00;
-    }
-
-    /* Leaderboard modal overlay */
-    #leaderboardModal {
+    #startOverlay {
       position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background-color: rgba(0, 0, 0, 0.9);
+      inset: 0;
+      background: rgba(0,0,0,0.9);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
       color: #00ff00;
-      font-family: monospace;
+      font-size: 24px;
+      z-index: 999;
+    }
+    #startOverlay input {
+      background: black;
+      color: #00ff00;
+      font-size: 22px;
+      border: 2px solid #00ff00;
+      border-radius: 5px;
+      padding: 8px 12px;
+      margin-top: 15px;
+      width: 250px;
+      text-align: center;
+    }
+    #startOverlay button {
+      margin-top: 15px;
+      width: 150px;
+      cursor: pointer;
+    }
+    #modalOverlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.95);
       display: none;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      z-index: 10000;
+      z-index: 9999;
+      color: #00ff00;
+      font-size: 20px;
       padding: 20px;
     }
-
-    #leaderboardModal h2 {
-      margin-bottom: 20px;
-      font-size: 28px;
-    }
-
-    #leaderboardModal ul {
-      list-style: none;
-      padding: 0;
-      max-height: 300px;
-      overflow-y: auto;
-      width: 100%;
-      max-width: 400px;
-      border: 2px solid #00ff00;
-      border-radius: 8px;
-      background-color: #111;
-    }
-
-    #leaderboardModal ul li {
-      padding: 8px 12px;
-      border-bottom: 1px solid #00ff00;
+    #modalOverlay.active {
       display: flex;
-      justify-content: space-between;
     }
-
-    #leaderboardModal button {
-      margin-top: 20px;
+    #modalContent {
+      background: #111;
+      border: 3px solid #00ff00;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+      position: relative;
+    }
+    #modalContent h2 {
+      margin-top: 0;
+      margin-bottom: 15px;
+    }
+    #modalContent button {
       background-color: #00ff00;
       color: black;
       border: none;
-      padding: 8px 20px;
-      font-size: 16px;
+      padding: 10px 20px;
+      font-size: 18px;
       border-radius: 6px;
       cursor: pointer;
+      margin: 5px;
     }
-    #leaderboardModal button:hover {
-      background-color: #00cc00;
+    #modalContent #closeModalBtn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: transparent;
+      color: #00ff00;
+      font-size: 24px;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
     }
-
+    #leaderboardList {
+      max-height: 200px;
+      overflow-y: auto;
+      text-align: left;
+      margin: 10px 0;
+      padding-left: 10px;
+    }
+    #leaderboardList li {
+      margin-bottom: 6px;
+    }
   </style>
 </head>
 <body>
@@ -184,229 +171,294 @@
   <div class="score" id="scoreDisplay">Score: 0</div>
   <canvas id="game" width="300" height="300"></canvas>
 
-  <!-- Buttons container -->
-  <div class="game-buttons">
-    <button id="restartBtn" title="Restart Game">Restart</button>
-    <button id="leaderboardBtn" title="View Leaderboard">Leaderboard</button>
+  <div class="controls">
+    <button onclick="setDirection('UP')">⬆️</button><br/>
+    <button onclick="setDirection('LEFT')">⬅️</button>
+    <button onclick="setDirection('DOWN')">⬇️</button>
+    <button onclick="setDirection('RIGHT')">➡️</button>
   </div>
 
-  <div class="controls">
-    <div><button onclick="setDirection('UP')">⬆️</button></div>
-    <div>
-      <button onclick="setDirection('LEFT')">⬅️</button>
-      <button onclick="setDirection('DOWN')">⬇️</button>
-      <button onclick="setDirection('RIGHT')">➡️</button>
+  <!-- Start Overlay -->
+  <div id="startOverlay">
+    <label for="usernameInput">Enter Your Name to Start</label>
+    <input id="usernameInput" type="text" maxlength="15" placeholder="Your Name" autocomplete="off" />
+    <button id="startBtn">Start Game</button>
+  </div>
+
+  <!-- Modal Overlay (Game Over/Win + Leaderboard + Share) -->
+  <div id="modalOverlay" aria-modal="true" role="dialog">
+    <div id="modalContent">
+      <button id="closeModalBtn" title="Close">&times;</button>
+      <h2 id="modalTitle">Game Over</h2>
+      <p id="modalMessage"></p>
+      <button id="restartBtn">Restart Game</button>
+      <button id="showLeaderboardBtn">Show Leaderboard</button>
+      <button id="shareBtn">Share Score on X</button>
+      <ul id="leaderboardList" style="display:none;"></ul>
     </div>
   </div>
 
-  <audio id="eatSound" src="eat.mp3"></audio>
-  <audio id="bigEatSound" src="big-eat.mp3"></audio>
-  <audio id="winSound" src="win.mp3"></audio>
+<script>
+  const canvas = document.getElementById("game");
+  const ctx = canvas.getContext("2d");
+  const box = 15;
+  const canvasSize = 20;
 
-  <!-- Leaderboard Modal -->
-  <div id="leaderboardModal">
-    <h2>Leaderboard</h2>
-    <ul id="leaderboardList"></ul>
-    <button id="closeLeaderboard">Close</button>
-  </div>
+  // Sizes for images (you can tweak here)
+  const snakeSize = 20; // px for snake segment
+  const smallBallSize = 15;
+  const bigBallSize = 30;
 
-  <script>
-    const canvas = document.getElementById("game");
-    const ctx = canvas.getContext("2d");
-    const box = 15;
-    const canvasSize = 20;
-    const spriteScale = 1.5;
-    const spriteSize = box * spriteScale;
+  let snake = [];
+  let direction = null;
+  let score = 0;
+  let foodCount = 0;
+  let food = null;
+  let gameInterval = null;
+  let username = "";
 
-    let snake = [{ x: 9 * box, y: 9 * box }];
-    let direction = null;
-    let score = 0;
-    let foodCount = 0;
+  // Images - replace URLs with your HD assets if you want
+  const snakeHeadImg = new Image();
+  const snakeBodyImg = new Image();
+  const redBallImg = new Image();
+  const bigFoodImg = new Image();
 
-    const eatSound = document.getElementById("eatSound");
-    const bigEatSound = document.getElementById("bigEatSound");
-    const winSound = document.getElementById("winSound");
+  // Example HD images URLs:
+  const snakeHeadURL = "https://iili.io/FYpkV1f.png"; // You can replace
+  const snakeBodyURL = "https://iili.io/FYpkV1f.png";
+  const redBallURL = "https://iili.io/FYpkV1f.png";
+  const bigBallURL = "https://iili.io/Fa9MMAu.th.png";
 
-    const snakeHeadImg = new Image();
-    const snakeBodyImg = new Image();
-    const redBallImg = new Image();
-    const bigFoodImg = new Image();
+  snakeHeadImg.src = snakeHeadURL;
+  snakeBodyImg.src = snakeBodyURL;
+  redBallImg.src = redBallURL;
+  bigFoodImg.src = bigBallURL;
 
-    const imageURL = "https://iili.io/FYpkV1f.png";
-    snakeHeadImg.src = imageURL;
-    snakeBodyImg.src = imageURL;
-    redBallImg.src = imageURL;
-    bigFoodImg.src = "https://iili.io/Fa9MMAu.th.png";
+  // Sounds (replace URLs or add your own mp3)
+  const eatSound = new Audio("eat.mp3");
+  const bigEatSound = new Audio("big-eat.mp3");
+  const winSound = new Audio("win.mp3");
 
-    let food = generateFood();
-    let gameInterval = null;
+  // UI Elements
+  const scoreDisplay = document.getElementById("scoreDisplay");
+  const startOverlay = document.getElementById("startOverlay");
+  const usernameInput = document.getElementById("usernameInput");
+  const startBtn = document.getElementById("startBtn");
+  const modalOverlay = document.getElementById("modalOverlay");
+  const modalTitle = document.getElementById("modalTitle");
+  const modalMessage = document.getElementById("modalMessage");
+  const restartBtn = document.getElementById("restartBtn");
+  const showLeaderboardBtn = document.getElementById("showLeaderboardBtn");
+  const shareBtn = document.getElementById("shareBtn");
+  const closeModalBtn = document.getElementById("closeModalBtn");
+  const leaderboardList = document.getElementById("leaderboardList");
 
-    function generateFood() {
-      const isBig = foodCount > 0 && foodCount % 5 === 0;
-      return {
-        x: Math.floor(Math.random() * canvasSize) * box,
-        y: Math.floor(Math.random() * canvasSize) * box,
-        big: isBig
-      };
+  // Start button click
+  startBtn.addEventListener("click", () => {
+    const name = usernameInput.value.trim();
+    if (!name) {
+      alert("Please enter your name to start!");
+      return;
     }
+    username = name;
+    startOverlay.style.display = "none";
+    resetGame();
+    startGame();
+  });
 
-    function setDirection(dir) {
-      if (dir === "LEFT" && direction !== "RIGHT") direction = "LEFT";
-      if (dir === "UP" && direction !== "DOWN") direction = "UP";
-      if (dir === "RIGHT" && direction !== "LEFT") direction = "RIGHT";
-      if (dir === "DOWN" && direction !== "UP") direction = "DOWN";
-    }
+  // Restart button click
+  restartBtn.addEventListener("click", () => {
+    modalOverlay.classList.remove("active");
+    resetGame();
+    startGame();
+  });
 
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "ArrowLeft") setDirection("LEFT");
-      if (e.key === "ArrowUp") setDirection("UP");
-      if (e.key === "ArrowRight") setDirection("RIGHT");
-      if (e.key === "ArrowDown") setDirection("DOWN");
+  // Show leaderboard button click
+  showLeaderboardBtn.addEventListener("click", () => {
+    showLeaderboardBtn.style.display = "none";
+    restartBtn.style.display = "inline-block";
+    shareBtn.style.display = "inline-block";
+    displayLeaderboard();
+  });
+
+  // Share button click
+  shareBtn.addEventListener("click", () => {
+    const text = encodeURIComponent(`I scored ${score} points in Recall Snake Game! 🐍 #RecallSnakeGame`);
+    const url = `https://x.com/intent/tweet?text=${text}`;
+    window.open(url, "_blank", "width=600,height=400");
+  });
+
+  // Close modal button click
+  closeModalBtn.addEventListener("click", () => {
+    modalOverlay.classList.remove("active");
+  });
+
+  // Keyboard controls
+  document.addEventListener("keydown", (e) => {
+    if (!gameInterval) return; // don't move if game not started
+    if (e.key === "ArrowLeft") setDirection("LEFT");
+    else if (e.key === "ArrowUp") setDirection("UP");
+    else if (e.key === "ArrowRight") setDirection("RIGHT");
+    else if (e.key === "ArrowDown") setDirection("DOWN");
+  });
+
+  // Direction setter with safety
+  function setDirection(dir) {
+    if (dir === "LEFT" && direction !== "RIGHT") direction = "LEFT";
+    else if (dir === "UP" && direction !== "DOWN") direction = "UP";
+    else if (dir === "RIGHT" && direction !== "LEFT") direction = "RIGHT";
+    else if (dir === "DOWN" && direction !== "UP") direction = "DOWN";
+  }
+
+  // Generate food object
+  function generateFood() {
+    const isBig = foodCount > 0 && foodCount % 5 === 0;
+    return {
+      x: Math.floor(Math.random() * canvasSize) * box,
+      y: Math.floor(Math.random() * canvasSize) * box,
+      big: isBig
+    };
+  }
+
+  // Reset game state
+  function resetGame() {
+    snake = [{ x: 9 * box, y: 9 * box }];
+    direction = null;
+    score = 0;
+    foodCount = 0;
+    food = generateFood();
+    updateScore();
+  }
+
+  // Start game loop
+  function startGame() {
+    if (gameInterval) clearInterval(gameInterval);
+    direction = "RIGHT"; // default start direction
+    gameInterval = setInterval(drawGame, 100);
+  }
+
+  // Update score display
+  function updateScore() {
+    scoreDisplay.textContent = `Player: ${username} | Score: ${score}`;
+  }
+
+  // Draw game frame
+  function drawGame() {
+    // Clear and draw background
+    ctx.fillStyle = "#111";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Draw game boundary lines (overline fixes)
+    ctx.strokeStyle = "#00ff00";
+    ctx.lineWidth = 3;
+    ctx.strokeRect(0, 0, canvas.width, canvas.height);
+
+    // Draw snake
+    snake.forEach((segment, idx) => {
+      const img = idx === 0 ? snakeHeadImg : snakeBodyImg;
+      const size = idx === 0 ? snakeSize : snakeSize * 0.9; // head bigger
+      ctx.drawImage(img, segment.x + (box - size)/2, segment.y + (box - size)/2, size, size);
     });
 
-    function resetGame() {
-      snake = [{ x: 9 * box, y: 9 * box }];
-      direction = null;
-      score = 0;
-      foodCount = 0;
-      food = generateFood();
-      updateScore();
+    // Draw food
+    const foodImg = food.big ? bigFoodImg : redBallImg;
+    const fSize = food.big ? bigBallSize : smallBallSize;
+    ctx.drawImage(foodImg, food.x + (box - fSize)/2, food.y + (box - fSize)/2, fSize, fSize);
+
+    // Calculate next head position
+    let headX = snake[0].x;
+    let headY = snake[0].y;
+    if (direction === "LEFT") headX -= box;
+    else if (direction === "RIGHT") headX += box;
+    else if (direction === "UP") headY -= box;
+    else if (direction === "DOWN") headY += box;
+
+    // Check collisions: wall or self
+    if (
+      headX < 0 || headX >= canvas.width ||
+      headY < 0 || headY >= canvas.height ||
+      snake.some((seg, i) => i !== 0 && seg.x === headX && seg.y === headY)
+    ) {
+      endGame(false);
+      return;
     }
 
-    function startGame() {
-      if(gameInterval) clearInterval(gameInterval);
-      gameInterval = setInterval(drawGame, 100);
-    }
+    // New head position object
+    const newHead = { x: headX, y: headY };
 
-    function endGame(message) {
-      clearInterval(gameInterval);
-      alert(message);
-      saveScore();
-    }
+    // Check if food eaten
+    if (headX === food.x && headY === food.y) {
+      foodCount++;
+      score += food.big ? 25 : 5;
+      (food.big ? bigEatSound : eatSound).play();
 
-    function updateScore() {
-      document.getElementById("scoreDisplay").innerText = "Score: " + score;
-    }
-
-    function saveScore() {
-      // Save leaderboard in localStorage
-      let leaderboard = JSON.parse(localStorage.getItem("recallSnakeLeaderboard")) || [];
-      const playerName = localStorage.getItem("recallSnakePlayerName") || "Player";
-
-      leaderboard.push({ name: playerName, score: score });
-      leaderboard.sort((a,b) => b.score - a.score);
-      if(leaderboard.length > 10) leaderboard.length = 10; // keep top 10
-
-      localStorage.setItem("recallSnakeLeaderboard", JSON.stringify(leaderboard));
-    }
-
-    function showLeaderboard() {
-      const modal = document.getElementById("leaderboardModal");
-      const list = document.getElementById("leaderboardList");
-
-      let leaderboard = JSON.parse(localStorage.getItem("recallSnakeLeaderboard")) || [];
-      if(leaderboard.length === 0) {
-        list.innerHTML = "<li>No scores yet.</li>";
-      } else {
-        list.innerHTML = leaderboard.map(item =>
-          `<li><strong>${item.name}</strong> <span>${item.score}</span></li>`
-        ).join("");
-      }
-
-      modal.style.display = "flex";
-    }
-
-    function hideLeaderboard() {
-      document.getElementById("leaderboardModal").style.display = "none";
-    }
-
-    function drawGame() {
-      ctx.fillStyle = "#111";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      snake.forEach((segment, index) => {
-        const img = index === 0 ? snakeHeadImg : snakeBodyImg;
-        ctx.drawImage(img, segment.x, segment.y, spriteSize, spriteSize);
-      });
-
-      const foodImg = food.big ? bigFoodImg : redBallImg;
-      const foodSize = food.big ? spriteSize * 1.8 : spriteSize;
-      ctx.drawImage(foodImg, food.x, food.y, foodSize, foodSize);
-
-      let headX = snake[0].x;
-      let headY = snake[0].y;
-      if (direction === "LEFT") headX -= box;
-      if (direction === "RIGHT") headX += box;
-      if (direction === "UP") headY -= box;
-      if (direction === "DOWN") headY += box;
-
-      if (
-        headX < 0 || headX >= canvas.width ||
-        headY < 0 || headY >= canvas.height ||
-        snake.some((s, i) => i !== 0 && s.x === headX && s.y === headY)
-      ) {
-        endGame("Game Over! Score: " + score);
+      if(score >= 500){
+        endGame(true);
         return;
       }
 
-      let newHead = { x: headX, y: headY };
-
-      if (headX === food.x && headY === food.y) {
-        foodCount++;
-        score += food.big ? 25 : 5;
-        food.big ? bigEatSound.play() : eatSound.play();
-
-        if (score >= 500) {
-          winSound.play();
-          endGame("🎉 You Win! Final Score: " + score);
-          return;
-        }
-
-        food = generateFood();
-      } else {
-        snake.pop();
-      }
-
-      snake.unshift(newHead);
-      updateScore();
+      food = generateFood();
+    } else {
+      snake.pop();
     }
 
-    // Buttons events
-    document.getElementById("restartBtn").addEventListener("click", () => {
-      resetGame();
-      startGame();
-    });
+    snake.unshift(newHead);
+    updateScore();
+  }
 
-    document.getElementById("leaderboardBtn").addEventListener("click", showLeaderboard);
-    document.getElementById("closeLeaderboard").addEventListener("click", hideLeaderboard);
+  // End game (win=false for lose, true for win)
+  function endGame(win) {
+    clearInterval(gameInterval);
+    gameInterval = null;
 
-    // Initial game start after asking for name
-    function askPlayerName() {
-      let name = prompt("Enter your name to start playing:", "Player");
-      if (!name || name.trim() === "") name = "Player";
-      localStorage.setItem("recallSnakePlayerName", name.trim());
+    // Save score to leaderboard
+    saveScore();
+
+    modalTitle.textContent = win ? "🎉 You Win!" : "Game Over!";
+    modalMessage.textContent = win 
+      ? `Final Score: ${score}` 
+      : `You scored: ${score}. Try again!`;
+    
+    leaderboardList.style.display = "none";
+    showLeaderboardBtn.style.display = "inline-block";
+    restartBtn.style.display = "inline-block";
+    shareBtn.style.display = "inline-block";
+
+    modalOverlay.classList.add("active");
+  }
+
+  // Save score to localStorage leaderboard
+  function saveScore() {
+    if (!username) return;
+
+    let leaderboard = JSON.parse(localStorage.getItem("recallSnakeLeaderboard")) || [];
+    leaderboard.push({ name: username, score: score });
+    leaderboard.sort((a,b) => b.score - a.score);
+    if (leaderboard.length > 10) leaderboard.length = 10; // top 10 only
+    localStorage.setItem("recallSnakeLeaderboard", JSON.stringify(leaderboard));
+  }
+
+  // Display leaderboard list
+  function displayLeaderboard() {
+    let leaderboard = JSON.parse(localStorage.getItem("recallSnakeLeaderboard")) || [];
+    if (leaderboard.length === 0) {
+      leaderboardList.innerHTML = "<li>No scores yet.</li>";
+    } else {
+      leaderboardList.innerHTML = leaderboard
+        .map((entry, i) => `<li>${i+1}. ${entry.name} - ${entry.score}</li>`)
+        .join("");
     }
+    leaderboardList.style.display = "block";
+  }
 
-    askPlayerName();
-    resetGame();
-    startGame();
-
-    // Direction control for buttons
-    function setDirection(dir) {
-      if (dir === "LEFT" && direction !== "RIGHT") direction = "LEFT";
-      if (dir === "UP" && direction !== "DOWN") direction = "UP";
-      if (dir === "RIGHT" && direction !== "LEFT") direction = "RIGHT";
-      if (dir === "DOWN" && direction !== "UP") direction = "DOWN";
-    }
-
-    window.setDirection = setDirection; // expose for inline onclicks
-
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "ArrowLeft") setDirection("LEFT");
-      if (e.key === "ArrowUp") setDirection("UP");
-      if (e.key === "ArrowRight") setDirection("RIGHT");
-      if (e.key === "ArrowDown") setDirection("DOWN");
-    });
-  </script>
+  // Control buttons handler
+  function setDirection(dir) {
+    if (!gameInterval) return; // no move if not started
+    if (dir === "LEFT" && direction !== "RIGHT") direction = "LEFT";
+    else if (dir === "UP" && direction !== "DOWN") direction = "UP";
+    else if (dir === "RIGHT" && direction !== "LEFT") direction = "RIGHT";
+    else if (dir === "DOWN" && direction !== "UP") direction = "DOWN";
+  }
+</script>
 </body>
 </html>
