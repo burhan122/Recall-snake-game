@@ -114,7 +114,7 @@
       if (e.key === "ArrowDown" && direction !== "UP") direction = "DOWN";
     });
 
-    // ✅ On-screen button controls
+    // ✅ Button-based direction control
     function setDirection(dir) {
       if (dir === "LEFT" && direction !== "RIGHT") direction = "LEFT";
       if (dir === "UP" && direction !== "DOWN") direction = "UP";
@@ -126,14 +126,17 @@
       ctx.fillStyle = "#111";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+      // Draw snake
       for (let i = 0; i < snake.length; i++) {
         ctx.fillStyle = i === 0 ? "#00ff00" : "#007700";
         ctx.fillRect(snake[i].x, snake[i].y, box, box);
       }
 
+      // Draw food
       ctx.fillStyle = "red";
       ctx.fillRect(food.x, food.y, box, box);
 
+      // Move snake
       let headX = snake[0].x;
       let headY = snake[0].y;
 
@@ -142,6 +145,7 @@
       if (direction === "UP") headY -= box;
       if (direction === "DOWN") headY += box;
 
+      // Game Over check
       if (
         headX < 0 || headX >= canvas.width ||
         headY < 0 || headY >= canvas.height ||
