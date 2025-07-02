@@ -6,9 +6,7 @@
   <title>Recall Snake Game</title>
   <style>
     body {
-      background-image: url('background.png');
-      background-size: cover;
-      background-repeat: no-repeat;
+      background-color: black;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -18,7 +16,7 @@
 
     canvas {
       border: 3px solid #00ff00;
-      background-color: rgba(0, 0, 0, 0.6);
+      background-color: #111;
     }
 
     h1 {
@@ -86,7 +84,6 @@
     <span>Welcome to Trueworker24 Recall-Snake-Game 🐍</span>
   </div>
 
-  <img src="snake-logo.png" alt="Snake Logo" style="width: 100px; margin-top: 10px;">
   <h1>Recall Snake Game</h1>
   <div class="score" id="scoreDisplay">Score: 0</div>
   <canvas id="game" width="300" height="300"></canvas>
@@ -95,7 +92,7 @@
     <div><button onclick="setDirection('UP')">⬆️</button></div>
     <div>
       <button onclick="setDirection('LEFT')">⬅️</button>
-      <button onclick="setDirection('DOWN')">🔽️</button>
+      <button onclick="setDirection('DOWN')">⬇️</button>
       <button onclick="setDirection('RIGHT')">➡️</button>
     </div>
   </div>
@@ -109,12 +106,12 @@
     const ctx = canvas.getContext("2d");
     const box = 15;
     const canvasSize = 20;
+
     let snake = [{ x: 9 * box, y: 9 * box }];
     let foodCount = 0;
-    let isBigFood = false;
     let direction = null;
     let score = 0;
-    let game;
+    let isBigFood = false;
 
     const eatSound = document.getElementById("eatSound");
     const bigEatSound = document.getElementById("bigEatSound");
@@ -146,18 +143,15 @@
     });
 
     function drawGame() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "#111";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      ctx.drawImage(document.getElementById("bgImg"), 0, 0, canvas.width, canvas.height);
-
-      // Draw snake
       for (let i = 0; i < snake.length; i++) {
         let img = new Image();
         img.src = i === 0 ? "snake-head.png" : "snake-body.png";
         ctx.drawImage(img, snake[i].x, snake[i].y, box, box);
       }
 
-      // Draw food
       let foodImg = new Image();
       foodImg.src = food.big ? "big-food.png" : "red-ball.png";
       ctx.drawImage(foodImg, food.x, food.y, box, box);
@@ -184,13 +178,17 @@
       if (headX === food.x && headY === food.y) {
         foodCount++;
         score += food.big ? 25 : 5;
+        if (food.big) {
+          bigEatSound.play();
+        } else {
+          eatSound.play();
+        }
         if (score >= 500) {
           winSound.play();
           clearInterval(game);
           alert("🎉 You Win! Final Score: " + score);
           location.reload();
         }
-        (food.big ? bigEatSound : eatSound).play();
         food = generateFood();
       } else {
         snake.pop();
@@ -200,18 +198,7 @@
       document.getElementById("scoreDisplay").innerText = "Score: " + score;
     }
 
-    window.onload = () => {
-      const bg = new Image();
-      bg.src = 'background.png';
-      bg.onload = () => {
-        const bgImg = document.createElement('img');
-        bgImg.id = 'bgImg';
-        bgImg.src = bg.src;
-        bgImg.style.display = 'none';
-        document.body.appendChild(bgImg);
-        game = setInterval(drawGame, 100);
-      };
-    }
+    let game = setInterval(drawGame, 100);
   </script>
 </body>
 </html>
