@@ -500,7 +500,7 @@
   <div class="game-container">
     <div class="score-panel">
       <div class="score-display" id="scoreDisplay">Score: 0</div>
-      <button class="action-btn" id="restartBtn">
+      <button class="action-btn" id="restartGameBtn">
         <span>🕹</span> RESTART GAME
       </button>
     </div>
@@ -514,7 +514,6 @@
         <button id="down-btn" aria-label="Move Down">⬇️</button>
         <button id="right-btn" aria-label="Move Right">➡️</button>
       </div>
-    
     </div>
   </div>
   
@@ -566,9 +565,6 @@
     const usernameInput = document.getElementById('usernameInput');
     const startBtn = document.getElementById('startBtn');
     const scoreDisplay = document.getElementById('scoreDisplay');
-    const pauseBtn = document.getElementById('pauseBtn');
-    const showScoreboardBtn = document.getElementById('showScoreboardBtn');
-    const scoreboardList = document.getElementById('scoreboardList');
     const upBtn = document.getElementById('up-btn');
     const leftBtn = document.getElementById('left-btn');
     const downBtn = document.getElementById('down-btn');
@@ -579,6 +575,8 @@
     const restartBtn = document.getElementById('restartBtn');
     const shareBtn = document.getElementById('shareBtn');
     const closeModalBtn = document.getElementById('closeModalBtn');
+    const restartGameBtn = document.getElementById('restartGameBtn');
+    const scoreboardList = document.getElementById('scoreboardList');
     
     // Initialize game
     function init() {
@@ -590,8 +588,7 @@
     function setupEventListeners() {
       startBtn.addEventListener('click', startGameHandler);
       restartBtn.addEventListener('click', restartGame);
-      pauseBtn.addEventListener('click', togglePause);
-      showScoreboardBtn.addEventListener('click', displayScoreboard);
+      restartGameBtn.addEventListener('click', restartGame);
       shareBtn.addEventListener('click', shareScore);
       closeModalBtn.addEventListener('click', closeModal);
       
@@ -670,7 +667,6 @@
       nextDirection = 'RIGHT';
       score =0;
       isPaused = false;
-      pauseBtn.innerHTML = '<span>⏸️</span> PAUSE';
       generateFood();
       updateScore();
       
@@ -935,7 +931,6 @@
       if (!gameStarted) return;
       
       if (e.key === ' ' || e.key === 'Escape') {
-        togglePause();
         return;
       }
       
@@ -946,20 +941,6 @@
         case 'ArrowDown': setDirection('DOWN'); break;
         case 'ArrowLeft': setDirection('LEFT'); break;
         case 'ArrowRight': setDirection('RIGHT'); break;
-      }
-    }
-    
-    // Toggle pause state
-    function togglePause() {
-      if (!gameStarted) return;
-      
-      isPaused = !isPaused;
-      pauseBtn.innerHTML = isPaused ? '<span>▶️</span> RESUME' : '<span>⏸️</span> PAUSE';
-      
-      if (isPaused) {
-        clearInterval(gameInterval);
-      } else {
-        gameInterval = setInterval(gameLoop, 120);
       }
     }
     
