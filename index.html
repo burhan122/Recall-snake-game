@@ -425,15 +425,6 @@
       width: 100%;
     }
     
-    /* Screenshot preview styling */
-    #screenshotPreview {
-      max-width: 100%;
-      border: 2px solid #00cc00;
-      border-radius: 8px;
-      margin: 15px 0;
-      display: none;
-    }
-    
     @media (min-width: 768px) {
       h1 {
         font-size: 2.8rem;
@@ -489,13 +480,9 @@
         <p id="modalMessage"></p>
       </div>
       
-      <!-- Screenshot preview will appear here -->
-      <img id="screenshotPreview" alt="Your game screenshot">
-      
       <div class="modal-buttons">
         <button id="restartBtn" class="modal-btn">RESTART GAME</button>
         <button id="shareBtn" class="modal-btn">SHARE ON X</button>
-        <button id="downloadBtn" class="modal-btn">DOWNLOAD SCREENSHOT</button>
       </div>
       
       <ul id="scoreboardList"></ul>
@@ -514,7 +501,7 @@
     <div class="score-panel">
       <div class="score-display" id="scoreDisplay">Score: 0</div>
       <button class="action-btn" id="restartGameBtn">
-        <span>🕹</span> RESTART GAME
+        <span>🕹</span> RESTART
       </button>
     </div>
     
@@ -551,7 +538,6 @@
     let isPaused = false;
     let gameStarted = false;
     let username = '';
-    let currentScreenshotUrl = '';
     
     // Images - using your custom images
     const snakeHeadImg = new Image();
@@ -588,11 +574,9 @@
     const modalMessage = document.getElementById('modalMessage');
     const restartBtn = document.getElementById('restartBtn');
     const shareBtn = document.getElementById('shareBtn');
-    const downloadBtn = document.getElementById('downloadBtn');
     const closeModalBtn = document.getElementById('closeModalBtn');
     const restartGameBtn = document.getElementById('restartGameBtn');
     const scoreboardList = document.getElementById('scoreboardList');
-    const screenshotPreview = document.getElementById('screenshotPreview');
     
     // Initialize game
     function init() {
@@ -605,8 +589,7 @@
       startBtn.addEventListener('click', startGameHandler);
       restartBtn.addEventListener('click', restartGame);
       restartGameBtn.addEventListener('click', restartGame);
-      shareBtn.addEventListener('click', shareScoreWithScreenshot);
-      downloadBtn.addEventListener('click', downloadScreenshot);
+      shareBtn.addEventListener('click', shareScore);
       closeModalBtn.addEventListener('click', closeModal);
       
       // Direction buttons
@@ -682,7 +665,7 @@
       ];
       direction = 'RIGHT';
       nextDirection = 'RIGHT';
-      score = 0;
+      score =0;
       isPaused = false;
       generateFood();
       updateScore();
@@ -895,40 +878,6 @@
       }
     }
     
-    // Capture screenshot of the game
-    function captureScreenshot() {
-      return canvas.toDataURL('image/png');
-    }
-    
-    // Show screenshot preview in modal
-    function showScreenshotPreview() {
-      currentScreenshotUrl = captureScreenshot();
-      screenshotPreview.src = currentScreenshotUrl;
-      screenshotPreview.style.display = 'block';
-    }
-    
-    // Download screenshot
-    function downloadScreenshot() {
-      const link = document.createElement('a');
-      link.download = `snake-score-${username}-${score}.png`;
-      link.href = currentScreenshotUrl;
-      link.click();
-    }
-    
-    // Share score with screenshot on X (Twitter)
-    function shareScoreWithScreenshot() {
-      const tweetText = `I scored ${score} points in Recall Snake Game! 🐍 #RecallSnakeGame\nPlay it here: ${window.location.href}`;
-      const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`;
-      
-      // First download the screenshot (user can manually attach it)
-      downloadScreenshot();
-      
-      // Then open Twitter
-      setTimeout(() => {
-        window.open(twitterUrl, "_blank", "width=600,height=400");
-      }, 500);
-    }
-    
     // End the game
     function endGame(isWin = false) {
       clearInterval(gameInterval);
@@ -953,9 +902,6 @@
       modalMessage.textContent = isWin 
         ? `Congratulations ${username}! You scored ${score} points!` 
         : `${username}, you scored ${score} points. Try again!`;
-      
-      // Capture and show screenshot
-      showScreenshotPreview();
       
       modalOverlay.classList.add('active');
     }
@@ -1041,6 +987,13 @@
           </li>
         `)
         .join('');
+    }
+    
+    // Share score on X (Twitter)
+    function shareScore() {
+      const text = encodeURIComponent(`I scored ${score} points in Recall Snake Game! 🐍 #RecallSnakeGame\nPlay it here: ${window.location.href}`);
+      const url = `https://twitter.com/intent/tweet?text=${text}`;
+      window.open(url, "_blank", "width=600,height=400");
     }
     
     // Close modal
