@@ -516,7 +516,11 @@
       </div>
 
 
-CODE 
+<div class="action-buttons">
+        <button class="action-btn" id="showScoreboardBtn">
+          <span>🏆</span> SCORES
+        </button>
+      </div>
 
 
       
@@ -729,7 +733,7 @@ CODE
       // Check if food is eaten
       if (head.x === food.x && head.y === food.y) {
         // Increase score based on food type
-        score += food.big ? 25 : 10;
+        score += food.big ? 30 : 10;
         
         // Play eat sound
         if (soundEnabled) {
